@@ -69,7 +69,7 @@ function updateFoodAmount(index, newAmount) {
 
   const globalIndex = mealFoodsIndices[index];
   const updatedFoods = [...props.trackedFoods];
-  updatedFoods[globalIndex].grams = Math.max(1, parseInt(newAmount) || 0);
+  updatedFoods[globalIndex].units = Math.max(1, parseInt(newAmount) || 0);
   emits('update:trackedFoods', updatedFoods);
 }
 
@@ -97,13 +97,17 @@ function addFoodItem() {
   const updatedFoods = [...props.trackedFoods];
 
   if (existingIndex >= 0) {
-    updatedFoods[existingIndex].grams += amount;
+    const parsedUnits = parseInt(updatedFoods[existingIndex].units ?? updatedFoods[existingIndex].grams, 10);
+    const currentUnits = Math.max(1, Number.isNaN(parsedUnits) ? 1 : parsedUnits);
+    updatedFoods[existingIndex].units = currentUnits + amount;
+    updatedFoods[existingIndex].measurement = selectedFood.value.unit;
   } else {
     updatedFoods.push({
       foodId: selectedFood.value.id,
       foodName: selectedFood.value.name,
       mealType: selectedMealType.value,
-      grams: amount
+      units: amount,
+      measurement: selectedFood.value.unit
     });
   }
 
@@ -251,7 +255,7 @@ function handleClose() {
               <td>
                 <input
                   type="number"
-                  :value="item.grams"
+                  :value="item.units ?? item.grams ?? 1"
                   @change="event => updateFoodAmount(index, event.target.value)"
                   class="amount-input"
                   min="1"

@@ -1,6 +1,7 @@
 # CaloriTracker
 
 A web application for tracking daily calorie and nutritional intake. Track meals throughout the day, set calorie goals, and visualize your dietary consumption with pie charts.
+When a new day starts simply delete from the day before, and get going again. It saves all data in browser, meaning every device is its own "user". 
 
 ## About
 
@@ -8,8 +9,10 @@ CaloriTracker helps you monitor your daily food consumption and nutritional goal
 
 - **Track Food Items**: Add meals and snacks to breakfast, lunch, dinner, or snack categories
 - **Custom Recipes**: Create and save custom recipe combinations
+- **Custom Recipes**: Create and save custom food items
 - **Calorie Goals**: Set and monitor daily calorie targets
-- **Nutritional Summary**: View detailed macronutrient breakdowns
+- **Nutritional Summary**: View detailed macronutrient breakdowns, all available food items, imported from Food data (frida.fooddata.dk), version 5.5, 2025, National. Food Institute, Technical University of Denmark
+Food data made available by National Food Institute, Technical University of Denmark (frida.fooddata.dk)
 - **Visual Analytics**: Pie charts showing meal distribution and caloric intake
 - **Local Storage**: All data is saved locally in your browser - no account required
 
@@ -19,7 +22,7 @@ CaloriTracker helps you monitor your daily food consumption and nutritional goal
 - **Build Tool**: Vite
 - **Progressive Web App**: PWA support (vite-plugin-pwa)
 - **Language**: JavaScript (ES modules)
-- **Storage**: Browser LocalStorage
+- **Storage**: Browser LocalStorage - this effectivly means that every device is its own user, and that it works fully offline
 
 ## Recommended IDE Setup
 

@@ -54,11 +54,20 @@ function saveCalorieGoal(goal) {
 }
 
 function loadTrackedFoods() {
-  return loadStoredValue(
+  const storedFoods = loadStoredValue(
     TRACKED_FOODS_STORAGE_KEY,
     [],
     value => Array.isArray(value)
   );
+
+  return storedFoods.map(item => {
+    const parsedUnits = parseInt(item.units ?? item.grams, 10);
+    return {
+      ...item,
+      units: Math.max(1, Number.isNaN(parsedUnits) ? 1 : parsedUnits),
+      measurement: item.measurement ?? item.unit
+    };
+  });
 }
 
 function saveTrackedFoods(foods) {
@@ -103,7 +112,11 @@ const mealCalories = computed(() => {
   trackedFoods.value.forEach(item => {
     const food = foods.value.find(f => f.id === item.foodId);
     if (food && Object.hasOwn(meals, item.mealType)) {
-      meals[item.mealType] += food.calories * item.grams / 100;
+      const parsedUnits = parseInt(item.units ?? item.grams, 10);
+      const amount = Math.max(1, Number.isNaN(parsedUnits) ? 1 : parsedUnits);
+      const measurement = item.measurement ?? food.unit;
+      const multiplier = measurement === 'portion' ? amount : amount / 100;
+      meals[item.mealType] += food.calories * multiplier;
     }
   });
   

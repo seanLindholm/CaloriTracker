@@ -24,16 +24,22 @@ const summaryByMeal = computed(() => {
 
   props.trackedFoods.forEach(item => {
     const food = props.foods.find(f => f.id === item.foodId);
-    const unit = food ? food.unit : 'unit';
+    const measurement = item.measurement ?? (food ? food.unit : 'measurement');
     const name = food ? food.name : item.foodName || item.foodId;
-    const calories = food ? (food.calories * item.grams) / 100 : 0;
+    const parsedUnits = parseInt(item.units ?? item.grams, 10);
+    const amount = Math.max(1, Number.isNaN(parsedUnits) ? 1 : parsedUnits);
+    const calories = food
+      ? measurement === 'portion'
+        ? food.calories * amount
+        : (food.calories * amount) / 100
+      : 0;
 
     if (meals[item.mealType]) {
       meals[item.mealType].push({
         id: item.foodId,
         name,
-        grams: item.grams,
-        unit,
+        units: amount,
+        measurement,
         calories
       });
     }
@@ -71,7 +77,7 @@ const hasAnyFoods = computed(() => {
             </tr>
             <tr v-for="item in summaryByMeal[meal]" :key="meal + '-' + item.id">
               <td>{{ item.name }}</td>
-              <td>{{ item.grams }} {{ item.unit }}</td>
+              <td>{{ item.units }} {{ item.measurement }}</td>
               <td>{{ Math.round(item.calories * 100) / 100 }}</td>
             </tr>
           </template>

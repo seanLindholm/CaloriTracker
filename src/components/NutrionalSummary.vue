@@ -18,7 +18,10 @@ const nutritionalStats = computed(() => {
   return props.trackedFoods.reduce((stats, item) => {
     const food = props.foods.find(f => f.id === item.foodId);
     if (food) {
-      const multiplier = item.grams / 100;
+      const parsedUnits = parseInt(item.units ?? item.grams, 10);
+      const amount = Math.max(1, Number.isNaN(parsedUnits) ? 1 : parsedUnits);
+      const measurement = item.measurement ?? food.unit;
+      const multiplier = measurement === 'portion' ? amount : amount / 100;
       stats.protein += food.protein * multiplier;
       stats.carbohydrates += food.carbohydrates * multiplier;
       stats.fibre += food.fibre * multiplier;

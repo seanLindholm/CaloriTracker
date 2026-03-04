@@ -57,7 +57,7 @@ const totalNutrition = computed(() => {
     const food = props.foods.find(f => f.id === item.foodId);
     if (food) {
       const amount = parseFloat(item.amount) || 0;
-      // Calculate based on unit (assuming amount in grams)
+      // Calculate based on unit
       const multiplier = amount / 100;
 
       nutritionFields.forEach(field => {
@@ -166,8 +166,6 @@ function saveRecipe() {
   recipeItems.value = [];
   itemSearches.value = {};
   selectedItemIndex.value = null;
-
-  alert('Recipe saved successfully!');
 }
 
 function handleClose() {
@@ -221,7 +219,7 @@ function handleClose() {
 
         <div v-else class="recipe-items-list">
           <div v-for="(item, index) in recipeItems" :key="index" class="recipe-item">
-            <div class="item-food-select">
+            <div class="item-food-select themed-scrollbar">
               <input
                 v-model="itemSearches[index]"
                 type="text"
