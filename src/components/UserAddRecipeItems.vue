@@ -5,14 +5,10 @@ const props = defineProps({
   foods: {
     type: Array,
     required: true
-  },
-  foodsExtended: {
-    type: Array,
-    required: true
   }
 });
 
-const emits = defineEmits(['update:foodsExtended', 'close']);
+const emits = defineEmits(['update:foods', 'close']);
 
 const recipeName = ref('');
 const recipePortions = ref(1);
@@ -146,8 +142,7 @@ function saveRecipe() {
   // Get the next ID for the new recipe
   const maxId = Math.max(
     0,
-    ...props.foods.map(f => f.id || 0),
-    ...props.foodsExtended.map(f => f.id || 0)
+    ...props.foods.map(f => f.id || 0)
   );
 
   const newRecipe = {
@@ -157,8 +152,8 @@ function saveRecipe() {
     ...perPortionNutrition.value
   };
 
-  const updatedFoodsExtended = [...props.foodsExtended, newRecipe];
-  emits('update:foodsExtended', updatedFoodsExtended);
+  const updatedFoods = [...props.foods, newRecipe];
+  emits('update:foods', updatedFoods);
 
   // Reset form
   recipeName.value = '';
@@ -166,6 +161,9 @@ function saveRecipe() {
   recipeItems.value = [];
   itemSearches.value = {};
   selectedItemIndex.value = null;
+  
+  // Auto-close the dialog after saving
+  handleClose();
 }
 
 function handleClose() {
@@ -206,11 +204,47 @@ function handleClose() {
         </div>
       </div>
 
+       <!-- Nutrition Summary -->
+      <div class="nutrition-summary">
+        <h3>Per Portion Nutrition:</h3>
+        <div class="nutrition-grid">
+          <div class="nutrition-item">
+            <span class="nutrition-label">Calories:</span>
+            <span class="nutrition-value">{{ Math.round(perPortionNutrition.calories) }}</span>
+          </div>
+          <div class="nutrition-item">
+            <span class="nutrition-label">Protein:</span>
+            <span class="nutrition-value">{{ Math.round(perPortionNutrition.protein * 10) / 10 }}g</span>
+          </div>
+          <div class="nutrition-item">
+            <span class="nutrition-label">Carbs:</span>
+            <span class="nutrition-value">{{ Math.round(perPortionNutrition.carbohydrates * 10) / 10 }}g</span>
+          </div>
+          <div class="nutrition-item">
+            <span class="nutrition-label">Fat:</span>
+            <span class="nutrition-value">{{ Math.round(perPortionNutrition.fat * 10) / 10 }}g</span>
+          </div>
+          <div class="nutrition-item">
+            <span class="nutrition-label">Salt:</span>
+            <span class="nutrition-value">{{ Math.round(perPortionNutrition.salt * 100) / 100 }}g</span>
+          </div>
+          <div class="nutrition-item">
+            <span class="nutrition-label">Fibre:</span>
+            <span class="nutrition-value">{{ Math.round(perPortionNutrition.fibre * 10) / 10 }}g</span>
+          </div>
+        </div>
+      </div>
+
+
       <!-- Recipe Items -->
       <div class="recipe-items-container">
-        <div class="items-header">
+        <div class="dialog-buttons">
           <h3>Recipe Items:</h3>
-          <button class="add-item-btn" @click="addRecipeItem">+ Add Item</button>
+          <div class="button-group">
+            <button class="save-btn" @click="saveRecipe">Save Recipe</button>
+            <button class="cancel-btn" @click="handleClose">Cancel</button>
+            <button class="add-item-btn" @click="addRecipeItem">+ Add Item</button>
+          </div>
         </div>
 
         <div v-if="recipeItems.length === 0" class="no-foods">
@@ -265,41 +299,10 @@ function handleClose() {
         </div>
       </div>
 
-      <!-- Nutrition Summary -->
-      <div class="nutrition-summary">
-        <h3>Per Portion Nutrition:</h3>
-        <div class="nutrition-grid">
-          <div class="nutrition-item">
-            <span class="nutrition-label">Calories:</span>
-            <span class="nutrition-value">{{ Math.round(perPortionNutrition.calories) }}</span>
-          </div>
-          <div class="nutrition-item">
-            <span class="nutrition-label">Protein:</span>
-            <span class="nutrition-value">{{ Math.round(perPortionNutrition.protein * 10) / 10 }}g</span>
-          </div>
-          <div class="nutrition-item">
-            <span class="nutrition-label">Carbs:</span>
-            <span class="nutrition-value">{{ Math.round(perPortionNutrition.carbohydrates * 10) / 10 }}g</span>
-          </div>
-          <div class="nutrition-item">
-            <span class="nutrition-label">Fat:</span>
-            <span class="nutrition-value">{{ Math.round(perPortionNutrition.fat * 10) / 10 }}g</span>
-          </div>
-          <div class="nutrition-item">
-            <span class="nutrition-label">Salt:</span>
-            <span class="nutrition-value">{{ Math.round(perPortionNutrition.salt * 100) / 100 }}g</span>
-          </div>
-          <div class="nutrition-item">
-            <span class="nutrition-label">Fibre:</span>
-            <span class="nutrition-value">{{ Math.round(perPortionNutrition.fibre * 10) / 10 }}g</span>
-          </div>
-        </div>
-      </div>
-
+     
       <!-- Action Buttons -->
       <div class="dialog-buttons">
-        <button class="save-btn" @click="saveRecipe">Save Recipe</button>
-        <button class="cancel-btn" @click="handleClose">Cancel</button>
+     
       </div>
     </div>
   </div>
@@ -354,7 +357,7 @@ function handleClose() {
   border-radius: 8px 8px 0 0;
   display: flex;
   flex-direction: column;
-  max-height: 90vh;
+  height: 90vh;
   overflow-y: auto;
 }
 
@@ -427,6 +430,7 @@ function handleClose() {
 .recipe-items-list {
   display: flex;
   flex-direction: column;
+  margin-top:10px;
   gap: 15px;
 }
 
@@ -582,7 +586,17 @@ function handleClose() {
 .dialog-buttons {
   display: flex;
   gap: 10px;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog-buttons h3 {
+  margin: 0;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
 }
 
 .save-btn {

@@ -9,14 +9,10 @@ const props = defineProps({
   foods: {
     type: Array,
     required: true
-  },
-  foodsExtended: {
-    type: Array,
-    required: true
   }
 });
 
-const emits = defineEmits(['update:trackedFoods', 'update:foodsExtended', 'close', 'open-recipe-dialog']);
+const emits = defineEmits(['update:trackedFoods', 'update:foods', 'close', 'open-recipe-dialog']);
 
 const selectedMealType = ref('breakfast');
 const showAddDialog = ref(false);
@@ -169,36 +165,34 @@ function addNewFood() {
     return;
   }
 
-  const updatedExtended = [
-    ...props.foodsExtended,
-    {
-      id,
-      name,
-      unit: newFoodUnit.value,
-      calories,
-      protein,
-      carbohydrates,
-      fat,
-      salt,
-      fibre: 0,
-      iron: 0,
-      vitaminA: 0,
-      vitaminB1: 0,
-      vitaminB2: 0,
-      vitaminB6: 0,
-      vitaminB12: 0,
-      vitaminC: 0,
-      vitaminD: 0,
-      vitaminD2: 0,
-      vitaminD3: 0,
-      vitaminE: 0,
-      vitaminK: 0,
-      vitaminK1: 0,
-      vitaminK2: 0
-    }
-  ];
+  const newFood = {
+    id,
+    name,
+    unit: newFoodUnit.value,
+    calories,
+    protein,
+    carbohydrates,
+    fat,
+    salt,
+    fibre: 0,
+    iron: 0,
+    vitaminA: 0,
+    vitaminB1: 0,
+    vitaminB2: 0,
+    vitaminB6: 0,
+    vitaminB12: 0,
+    vitaminC: 0,
+    vitaminD: 0,
+    vitaminD2: 0,
+    vitaminD3: 0,
+    vitaminE: 0,
+    vitaminK: 0,
+    vitaminK1: 0,
+    vitaminK2: 0
+  };
 
-  emits('update:foodsExtended', updatedExtended);
+  const updatedFoods = [...props.foods, newFood];
+  emits('update:foods', updatedFoods);
 
   selectedFoodId.value = id;
   foodSearch.value = name;
@@ -253,13 +247,16 @@ function handleClose() {
             <tr v-for="(item, index) in mealFoods" :key="index">
               <td>{{ item.foodName }}</td>
               <td>
-                <input
-                  type="number"
-                  :value="item.units ?? item.grams ?? 1"
-                  @change="event => updateFoodAmount(index, event.target.value)"
-                  class="amount-input"
-                  min="1"
-                />
+                <div class="amount-with-unit">
+                  <input
+                    type="number"
+                    :value="item.units ?? item.grams ?? 1"
+                    @change="event => updateFoodAmount(index, event.target.value)"
+                    class="amount-input"
+                    min="1"
+                  />
+                  <span class="unit-display">{{ item.measurement || props.foods.find(f => f.id === item.foodId)?.unit || 'unit' }}</span>
+                </div>
               </td>
               <td>
                 <button class="remove-btn" @click="removeFoodItem(index)">Remove</button>
@@ -491,10 +488,12 @@ function handleClose() {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  border: 1px solid var(--border-color);
 }
 
 .foods-table thead {
   background-color: var(--table-header-bg);
+  
 }
 
 .foods-table th {
@@ -515,9 +514,22 @@ function handleClose() {
   width: 80px;
   padding: 6px;
   border: 1px solid var(--border-color);
-  border-radius: 3px;
+  border-radius: 6px;
+  text-align: center;
   background-color: var(--input-bg);
   color: var(--text-color);
+}
+
+.amount-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unit-display {
+  color: var(--text-muted-color);
+  font-size: 13px;
+  white-space: nowrap;
 }
 
 .remove-btn {

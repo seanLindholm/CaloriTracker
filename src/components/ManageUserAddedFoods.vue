@@ -2,31 +2,35 @@
 import { ref, computed } from 'vue';
 
 const props = defineProps({
-  foodsExtended: {
+  foods: {
+    type: Array,
+    required: true
+  },
+  trackedFoods: {
     type: Array,
     required: true
   }
 });
 
-const emits = defineEmits(['update:foodsExtended', 'close']);
+const emits = defineEmits(['update:foods', 'update:trackedFoods', 'close']);
 
 const searchTerm = ref('');
 
 // Filter foods based on search term
 const filteredFoods = computed(() => {
   if (!searchTerm.value.trim()) {
-    return props.foodsExtended;
+    return props.foods;
   }
   const searchLower = searchTerm.value.toLowerCase();
-  return props.foodsExtended.filter(food =>
+  return props.foods.filter(food =>
     food.name.toLowerCase().includes(searchLower) ||
     String(food.id).toLowerCase().includes(searchLower)
   );
 });
 
 function updateFood(index, field, value) {
-  const updatedFoods = [...props.foodsExtended];
-  const globalIndex = props.foodsExtended.findIndex(
+  const updatedFoods = [...props.foods];
+  const globalIndex = props.foods.findIndex(
     f => f.id === filteredFoods.value[index].id
   );
   
@@ -34,19 +38,25 @@ function updateFood(index, field, value) {
     updatedFoods[globalIndex].name = value;
   } else if (field === 'unit') {
     updatedFoods[globalIndex].unit = value;
-  } else if (['calories', 'protein', 'carbohydrates', 'fat', 'salt'].includes(field)) {
+  } else if (['calories', 'protein', 'carbohydrates', 'fat', 'salt', 'fibre'].includes(field)) {
     updatedFoods[globalIndex][field] = parseFloat(value) || 0;
   }
   
-  emits('update:foodsExtended', updatedFoods);
+  emits('update:foods', updatedFoods);
 }
 
 function removeFood(index) {
-  const globalIndex = props.foodsExtended.findIndex(
+  const globalIndex = props.foods.findIndex(
     f => f.id === filteredFoods.value[index].id
   );
-  const updatedFoods = props.foodsExtended.filter((_, idx) => idx !== globalIndex);
-  emits('update:foodsExtended', updatedFoods);
+  const foodId = props.foods[globalIndex].id;
+  const updatedFoods = props.foods.filter((_, idx) => idx !== globalIndex);
+  
+  // Also remove this food from tracked foods
+  const updatedTrackedFoods = props.trackedFoods.filter(item => item.foodId !== foodId);
+  
+  emits('update:foods', updatedFoods);
+  emits('update:trackedFoods', updatedTrackedFoods);
 }
 
 function closePanel() {
@@ -75,7 +85,7 @@ function closePanel() {
       <p v-else>No user-added foods yet</p>
     </div>
 
-    <div v-else class="table-wrapper">
+    <div v-else class="table-wrapper themed-scrollbar">
       <table class="user-foods-table">
         <colgroup>
           <col class="col-name" />
@@ -85,6 +95,7 @@ function closePanel() {
           <col class="col-carbs" />
           <col class="col-fat" />
           <col class="col-salt" />
+          <col class="col-fibre" />
           <col class="col-action" />
         </colgroup>
         <thead>
@@ -92,10 +103,11 @@ function closePanel() {
             <th>Name</th>
             <th>Unit</th>
             <th>Calories</th>
-            <th>Protein (g)</th>
-            <th>Carbs (g)</th>
-            <th>Fat (g)</th>
-            <th>Salt (g)</th>
+            <th>Protein</th>
+            <th>Carbs</th>
+            <th>Fat</th>
+            <th>Salt</th>
+            <th>Fibre</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -130,7 +142,7 @@ function closePanel() {
                 step="0.1"
               />
             </td>
-            <td data-label="Protein (g)">
+            <td data-label="Protein">
               <input
                 :value="food.protein"
                 @change="e => updateFood(index, 'protein', e.target.value)"
@@ -140,7 +152,7 @@ function closePanel() {
                 step="0.1"
               />
             </td>
-            <td data-label="Carbs (g)">
+            <td data-label="Carbs">
               <input
                 :value="food.carbohydrates"
                 @change="e => updateFood(index, 'carbohydrates', e.target.value)"
@@ -150,7 +162,7 @@ function closePanel() {
                 step="0.1"
               />
             </td>
-            <td data-label="Fat (g)">
+            <td data-label="Fat">
               <input
                 :value="food.fat"
                 @change="e => updateFood(index, 'fat', e.target.value)"
@@ -160,10 +172,20 @@ function closePanel() {
                 step="0.1"
               />
             </td>
-            <td data-label="Salt (g)">
+            <td data-label="Salt">
               <input
                 :value="food.salt"
                 @change="e => updateFood(index, 'salt', e.target.value)"
+                class="cell-input"
+                type="number"
+                min="0"
+                step="0.1"
+              />
+            </td>
+            <td data-label="Fibre">
+              <input
+                :value="food.fibre"
+                @change="e => updateFood(index, 'fibre', e.target.value)"
                 class="cell-input"
                 type="number"
                 min="0"
@@ -193,12 +215,11 @@ function closePanel() {
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  overflow-y: auto;
 }
 
 .user-foods-panel > * {
   width: 100%;
-  max-width: 950px;
+  max-width: 1100px;
 }
 
 .panel-header {
@@ -229,7 +250,6 @@ function closePanel() {
 }
 
 .table-wrapper {
-  overflow-x: auto;
   flex: 1;
   overflow-y: auto;
 }
@@ -253,12 +273,13 @@ function closePanel() {
 .col-protein,
 .col-carbs,
 .col-fat,
-.col-salt {
-  width: 10%;
+.col-salt,
+.col-fibre {
+  width: 9%;
 }
 
 .col-action {
-  width: 8%;
+  width: 7%;
 }
 
 .user-foods-table thead {
@@ -315,7 +336,13 @@ function closePanel() {
   background-color: var(--danger-hover-color);
 }
 
-@media (max-width: 820px) {
+@media (min-width:1100px) {
+  .user-foods-table {
+    border: 1px solid var(--border-color);
+  }
+}
+
+@media (max-width: 1100px) {
   .user-foods-table colgroup {
     display: none;
   }
@@ -337,7 +364,7 @@ function closePanel() {
     display: block;
     background-color: var(--surface-color);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: 10px;
     margin-bottom: 15px;
     padding: 15px;
   }

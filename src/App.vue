@@ -2,22 +2,22 @@
 import { ref, computed } from 'vue';
 import PieChart from './components/Piechart.vue';
 import AddFoodDialog from './components/AddFoodDialog.vue';
-import UserAddFoodItems from './components/UserAddFoodItems.vue';
+import ManageUserAddedFoods from './components/ManageUserAddedFoods.vue';
 import UserAddRecipeItems from './components/UserAddRecipeItems.vue';
 import FoodSummary from './components/FoodSummary.vue';
 import NutrionalSummary from './components/NutrionalSummary.vue';
 import foodsData from './data/foods.json';
 
-const EXTENDED_FOODS_STORAGE_KEY = 'calcTrackerFoodsExtended';
+const FOODS_STORAGE_KEY = 'calcTrackerFoods';
 const CALORIE_GOAL_STORAGE_KEY = 'calcTrackerCalorieGoal';
 const TRACKED_FOODS_STORAGE_KEY = 'calcTrackerTrackedFoods';
 const DEFAULT_CALORIE_GOAL = 2000;
 
 const trackedFoods = ref(loadTrackedFoods());
-const foodsExtended = ref(loadExtendedFoods());
+const userFoods = ref(loadUserFoods());
 const calorieGoal = ref(loadCalorieGoal());
 const foods = computed(() => {
-  return [...foodsData.foods, ...foodsExtended.value];
+  return [...foodsData.foods, ...userFoods.value];
 });
 const showFoodDialog = ref(false);
 const showUserFoodItems = ref(false);
@@ -29,16 +29,16 @@ const todayDate = new Date().toLocaleDateString(undefined, {
   day: 'numeric'
 });
 
-function loadExtendedFoods() {
+function loadUserFoods() {
   return loadStoredValue(
-    EXTENDED_FOODS_STORAGE_KEY,
+    FOODS_STORAGE_KEY,
     [],
     value => Array.isArray(value)
   );
 }
 
-function saveExtendedFoods(updatedFoods) {
-  saveStoredValue(EXTENDED_FOODS_STORAGE_KEY, updatedFoods);
+function saveUserFoods(updatedUserFoods) {
+  saveStoredValue(FOODS_STORAGE_KEY, updatedUserFoods);
 }
 
 function loadCalorieGoal() {
@@ -132,9 +132,10 @@ function handleTrackedFoodsUpdate(updatedFoods) {
   saveTrackedFoods(updatedFoods);
 }
 
-function handleFoodsExtendedUpdate(updatedFoods) {
-  foodsExtended.value = updatedFoods;
-  saveExtendedFoods(updatedFoods);
+function handleUserFoodsUpdate(updatedFoods) {
+  const userOnlyFoods = updatedFoods.filter(f => !foodsData.foods.some(base => base.id === f.id));
+  userFoods.value = userOnlyFoods;
+  saveUserFoods(userOnlyFoods);
 }
 
 function handleCalorieGoalUpdate(newGoal) {
@@ -189,18 +190,19 @@ function clearDailyRegistrations() {
       v-if="showFoodDialog"
       :trackedFoods="trackedFoods"
       :foods="foods"
-      :foodsExtended="foodsExtended"
       @update:trackedFoods="handleTrackedFoodsUpdate"
-      @update:foodsExtended="handleFoodsExtendedUpdate"
+      @update:foods="handleUserFoodsUpdate"
       @open-recipe-dialog="showRecipeDialog = true"
       @close="showFoodDialog = false"
     />
 
     <!-- User Added Foods Panel -->
-    <UserAddFoodItems 
+    <ManageUserAddedFoods 
       v-if="showUserFoodItems"
-      :foodsExtended="foodsExtended"
-      @update:foodsExtended="handleFoodsExtendedUpdate"
+      :foods="userFoods"
+      :trackedFoods="trackedFoods"
+      @update:foods="handleUserFoodsUpdate"
+      @update:trackedFoods="handleTrackedFoodsUpdate"
       @close="showUserFoodItems = false"
     />
 
@@ -208,8 +210,7 @@ function clearDailyRegistrations() {
     <UserAddRecipeItems 
       v-if="showRecipeDialog"
       :foods="foods"
-      :foodsExtended="foodsExtended"
-      @update:foodsExtended="handleFoodsExtendedUpdate"
+      @update:foods="handleUserFoodsUpdate"
       @close="showRecipeDialog = false"
     />
 
