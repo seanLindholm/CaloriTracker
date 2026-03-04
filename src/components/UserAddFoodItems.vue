@@ -34,7 +34,7 @@ function updateFood(index, field, value) {
     updatedFoods[globalIndex].name = value;
   } else if (field === 'unit') {
     updatedFoods[globalIndex].unit = value;
-  } else if (['calories', 'protein', 'carbohydrates', 'fat'].includes(field)) {
+  } else if (['calories', 'protein', 'carbohydrates', 'fat', 'salt'].includes(field)) {
     updatedFoods[globalIndex][field] = parseFloat(value) || 0;
   }
   
@@ -84,6 +84,7 @@ function closePanel() {
           <col class="col-protein" />
           <col class="col-carbs" />
           <col class="col-fat" />
+          <col class="col-salt" />
           <col class="col-action" />
         </colgroup>
         <thead>
@@ -94,6 +95,7 @@ function closePanel() {
             <th>Protein (g)</th>
             <th>Carbs (g)</th>
             <th>Fat (g)</th>
+            <th>Salt (g)</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -152,6 +154,16 @@ function closePanel() {
               <input
                 :value="food.fat"
                 @change="e => updateFood(index, 'fat', e.target.value)"
+                class="cell-input"
+                type="number"
+                min="0"
+                step="0.1"
+              />
+            </td>
+            <td data-label="Salt (g)">
+              <input
+                :value="food.salt"
+                @change="e => updateFood(index, 'salt', e.target.value)"
                 class="cell-input"
                 type="number"
                 min="0"
@@ -240,12 +252,13 @@ function closePanel() {
 .col-calories,
 .col-protein,
 .col-carbs,
-.col-fat {
-  width: 11%;
+.col-fat,
+.col-salt {
+  width: 10%;
 }
 
 .col-action {
-  width: 10%;
+  width: 8%;
 }
 
 .user-foods-table thead {
