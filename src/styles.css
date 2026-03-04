@@ -1,0 +1,228 @@
+/* Apply box-sizing: border-box to all elements to make sizing more predictable. Remove default margins and padding. */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*Define colors, fonts, and spacing in :root for easy management.*/
+:root {
+  --bg-color: #1f2430;
+  --surface-color: #2a3140;
+  --surface-alt-color: #364055;
+  --text-color: #e7edf7;
+  --text-muted-color: #aeb8c9;
+  --primary-color: #8ea7c4;
+  --primary-hover-color: #9eb5cf;
+  --secondary-color: #5e6c84;
+  --secondary-hover-color: #6b7a94;
+  --success-color: #7ea892;
+  --success-hover-color: #8cb6a0;
+  --danger-color: #c98787;
+  --danger-hover-color: #d59797;
+  --border-color: #4a5468;
+  --table-header-bg: #3a455a;
+  --table-row-hover: #333d51;
+  --input-bg: #31394b;
+  --input-focus-bg: #3a4458;
+  --focus-ring-color: rgba(142, 167, 196, 0.35);
+  --overlay-color: rgba(18, 22, 30, 0.65);
+  --shadow-color: rgba(0, 0, 0, 0.35);
+  --meal-breakfast-color: #eb886d;
+  --meal-lunch-color: #93c4da;
+  --meal-dinner-color: #8cd4a8;
+  --meal-snack-color: #947ab9;
+  --summary-scroll-max-height: 400px;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --spacing-unit: 1rem;
+}
+
+/*Set the base font, line height, and color on the body.*/
+body {
+  font-family: var(--font-family);
+  line-height: 1.5;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+/* Shared utility styles used across multiple components */
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+}
+
+.close-btn:hover {
+  opacity: 0.7;
+  transform: none;
+  background-color: transparent;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+.no-foods {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted-color);
+  font-style: italic;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* General button styles */
+button {
+  padding: 10px 20px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-color);
+  background-color: var(--primary-color);
+  box-shadow: 0 2px 6px var(--shadow-color);
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px var(--shadow-color);
+  background-color: var(--primary-hover-color);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px var(--shadow-color);
+}
+
+button:focus {
+  outline: 2px solid var(--text-color);
+  outline-offset: 2px;
+}
+
+/* General table styles */
+table {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+}
+
+table thead {
+  background-color: var(--table-header-bg);
+}
+
+table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+table td {
+  padding: 12px 16px;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 14px;
+}
+
+table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+table tbody tr:hover {
+  background-color: var(--table-row-hover);
+}
+
+table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Table input/select styles */
+table input,
+table select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+table input:focus,
+table select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background-color: var(--input-focus-bg);
+  box-shadow: 0 0 0 3px var(--focus-ring-color);
+}
+
+table input:hover,
+table select:hover {
+  border-color: var(--primary-color);
+}
+
+/* Themed scrollbars for panel/table overflow areas */
+.themed-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary-color) var(--surface-alt-color);
+}
+
+.themed-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.themed-scrollbar::-webkit-scrollbar-track {
+  background: var(--surface-alt-color);
+  border-radius: 999px;
+}
+
+.themed-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--secondary-color), var(--primary-color));
+  border: 2px solid var(--surface-alt-color);
+  border-radius: 999px;
+}
+
+.themed-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--secondary-hover-color), var(--primary-hover-color));
+}
