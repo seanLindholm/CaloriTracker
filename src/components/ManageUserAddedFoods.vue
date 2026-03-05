@@ -281,42 +281,18 @@ function closePanel() {
   width: 7%;
 }
 
-.user-foods-table thead {
-  background-color: var(--table-header-bg);
-}
-
-.user-foods-table th {
-  padding: 12px;
-  text-align: left;
-  font-weight: bold;
-  color: var(--text-color);
-  border-bottom: 2px solid var(--border-color);
-}
-
 .user-foods-table td {
   padding: 8px;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-color);
-}
-
-.user-foods-table tbody tr:hover {
-  background-color: var(--table-row-hover);
 }
 
 .cell-input,
 .cell-select {
   width: 100%;
-  padding: 6px;
-  border: 1px solid var(--border-color);
   border-radius: 3px;
-  background-color: var(--input-bg);
-  color: var(--text-color);
-  box-sizing: border-box;
 }
 
 .cell-input:focus,
 .cell-select:focus {
-  outline: none;
   border-color: var(--text-color);
 }
 
@@ -324,9 +300,7 @@ function closePanel() {
   padding: 6px 12px;
   background-color: var(--danger-color);
   color: white;
-  border: none;
   border-radius: 3px;
-  cursor: pointer;
 }
 
 .delete-btn:hover {

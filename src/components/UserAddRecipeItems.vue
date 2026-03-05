@@ -481,11 +481,6 @@ function handleClose() {
 
 .item-amount input {
   width: 80px;
-  padding: 6px;
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
-  background-color: var(--input-bg);
-  color: var(--text-color);
 }
 
 .item-food-select .search-input:disabled {
@@ -497,17 +492,12 @@ function handleClose() {
 
 .unit {
   color: var(--text-muted-color);
-
 }
 
 .remove-btn {
   padding: 8px 16px;
   background-color: var(--danger-color);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
 }
 
 .remove-btn:hover {
@@ -530,12 +520,8 @@ function handleClose() {
 .dropdown-option {
   width: 100%;
   padding: 10px;
-  border: none;
   background: none;
   text-align: left;
-  color: var(--text-color);
-  cursor: pointer;
-
 }
 
 .dropdown-option:hover {
@@ -572,19 +558,15 @@ function handleClose() {
 
 .nutrition-label {
   color: var(--text-muted-color);
-
   font-weight: 500;
 }
 
 .nutrition-value {
   color: var(--text-color);
-
   font-weight: bold;
 }
 
 .dialog-buttons {
-  display: flex;
-  gap: 10px;
   justify-content: space-between;
   align-items: center;
 }
@@ -599,14 +581,8 @@ function handleClose() {
 }
 
 .save-btn {
-  padding: 10px 20px;
   background-color: var(--success-color);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  font-weight: bold;
 }
 
 .save-btn:hover {
@@ -614,13 +590,8 @@ function handleClose() {
 }
 
 .cancel-btn {
-  padding: 10px 20px;
   background-color: var(--border-color);
   color: var(--text-color);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
 }
 
 .cancel-btn:hover {

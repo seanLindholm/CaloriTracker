@@ -203,28 +203,16 @@ function cancelGoalEdit() {
 }
 
 .goal-input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    margin-bottom: 20px;
-    box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .goal-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px var(--focus-ring-color);
+  box-shadow: 0 0 0 2px var(--focus-ring-color);
 }
 
 .btn-save, .btn-cancel {
     padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
 }
 
 .btn-save {

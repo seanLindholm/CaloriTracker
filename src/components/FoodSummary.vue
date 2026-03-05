@@ -104,7 +104,6 @@ const hasAnyFoods = computed(() => {
   background-color: var(--surface-alt-color);
   font-weight: 600;
   text-transform: capitalize;
-
 }
 
 @media (min-width: 1000px) {

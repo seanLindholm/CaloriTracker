@@ -439,15 +439,6 @@ function handleClose() {
   align-items: center;
 }
 
-.dialog-header h2 {
-  margin: 0;
-  color: var(--text-color);
-}
-
-.close-btn {
-  font-size: 28px;
-}
-
 .meal-selector {
   display: flex;
   gap: 10px;
@@ -457,22 +448,13 @@ function handleClose() {
 
 .meal-dropdown {
   flex: 1;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background-color: var(--input-bg);
-  color: var(--text-color);
 }
 
 .add-btn {
   padding: 10px 16px;
   background-color: var(--success-color);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
   font-size: 18px;
-  font-weight: bold;
 }
 
 .add-btn:hover {
@@ -485,38 +467,12 @@ function handleClose() {
 }
 
 .foods-table {
-  width: 100%;
-  border-collapse: collapse;
   border: 1px solid var(--border-color);
-}
-
-.foods-table thead {
-  background-color: var(--table-header-bg);
-  
-}
-
-.foods-table th {
-  padding: 10px;
-  text-align: left;
-  font-weight: bold;
-  color: var(--text-color);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.foods-table td {
-  padding: 10px;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-color);
 }
 
 .amount-input {
   width: 80px;
-  padding: 6px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
   text-align: center;
-  background-color: var(--input-bg);
-  color: var(--text-color);
 }
 
 .amount-with-unit {
@@ -534,9 +490,6 @@ function handleClose() {
   padding: 6px 12px;
   background-color: var(--danger-color);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 .remove-btn:hover {
@@ -577,8 +530,6 @@ function handleClose() {
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: var(--text-color);
-  font-weight: 500;
 }
 
 .dropdown-list {
@@ -595,9 +546,6 @@ function handleClose() {
   text-align: left;
   padding: 8px 10px;
   background: none;
-  border: none;
-  color: var(--text-color);
-  cursor: pointer;
 }
 
 .dropdown-option:hover {
@@ -606,12 +554,8 @@ function handleClose() {
 
 .add-new-btn {
   margin-top: 8px;
-  padding: 8px 10px;
   background-color: transparent;
-  color: var(--text-color);
   border: 1px dashed var(--border-color);
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 .add-new-btn:hover {
@@ -629,18 +573,9 @@ function handleClose() {
   margin-top: 0;
 }
 
-.dialog-buttons {
-  margin-top: 20px;
-}
-
 .ok-btn {
-  padding: 10px 20px;
   background-color: var(--success-color);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
 }
 
 .ok-btn:hover {
@@ -648,12 +583,8 @@ function handleClose() {
 }
 
 .cancel-btn {
-  padding: 10px 20px;
   background-color: var(--secondary-color);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 .cancel-btn:hover {

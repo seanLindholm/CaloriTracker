@@ -212,7 +212,6 @@ const nutritionalStats = computed(() => {
 
 .nutrients-table tbody tr.nutrient-category td {
   padding: 10px 16px;
-
   letter-spacing: 0.5px;
 }
 
@@ -245,7 +244,6 @@ const nutritionalStats = computed(() => {
 
   .nutrients-table thead th {
     padding: 10px 8px;
-
   }
 
   .nutrients-table tbody td {

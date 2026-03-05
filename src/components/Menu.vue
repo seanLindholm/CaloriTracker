@@ -192,16 +192,15 @@ function closeMenu() {
 }
 
 .hamburger-btn {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    padding: 10px;
-    border-radius: 40px;
-    background-color: transparent;
-    cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 10px;
+  border-radius: 40px;
+  background-color: transparent;
 }
 
 .hamburger-btn:hover {
@@ -248,13 +247,14 @@ function closeMenu() {
   align-items: center;
   gap: 12px;
   padding: 12px 20px;
-  border: none;
   background-color: transparent;
-  cursor: pointer;
-  color: var(--text-color);
   white-space: nowrap;
 }
 
+.banner-menu .menu-button {
+  padding: 8px 14px;
+  border-radius: 6px;
+}
 
 .banner-menu .menu-button:hover {
   background-color: var(--surface-alt-color);
@@ -276,6 +276,4 @@ function closeMenu() {
   flex-shrink: 0;
   color: var(--text-color);
 }
-
-
 </style>
