@@ -215,8 +215,8 @@ function handleClose() {
 </script>
 
 <template>
-  <div class="dialog-overlay" :class="{ 'closing': isClosing }" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
-    <div class="dialog-content">
+  <div class="dialog-overlay-add-food" :class="{ 'closing': isClosing }" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <div class="dialog-content-add-food">
       <header class="dialog-header">
         <h2 id="dialog-title">Add / Edit Foods</h2>
         <button class="close-btn" @click="handleClose" aria-label="Close dialog">&times;</button>
@@ -390,7 +390,7 @@ function handleClose() {
 </template>
 
 <style scoped>
-.dialog-overlay {
+.dialog-overlay-add-food {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -424,11 +424,11 @@ function handleClose() {
   }
 }
 
-.dialog-overlay.closing {
+.dialog-overlay-add-food.closing {
   animation: slideDown 0.3s ease-in forwards;
 }
 
-.dialog-content {
+.dialog-content-add-food {
   background-color: var(--surface-color);
   height: 100%;
   display: flex;
@@ -509,6 +509,7 @@ function handleClose() {
   left: 0;
   right: 0;
   bottom: 0;
+  height: 100vh;
   background-color: var(--overlay-color);
   display: flex;
   align-items: center;
@@ -539,7 +540,7 @@ function handleClose() {
   margin-bottom: 8px;
 }
 
-.dropdown-list {
+.add-dialog-dropdown-list {
   margin-top: 8px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
@@ -548,14 +549,14 @@ function handleClose() {
   overflow-y: auto;
 }
 
-.dropdown-option {
+.add-dialog-dropdown-option {
   width: 100%;
   text-align: left;
   padding: 8px 10px;
   background: none;
 }
 
-.dropdown-option:hover {
+.add-dialog-dropdown-option:hover {
   background-color: var(--table-row-hover);
 }
 
@@ -569,13 +570,13 @@ function handleClose() {
   background-color: var(--table-row-hover);
 }
 
-.button-group {
+.add-dialog-button-group {
   display: flex;
   gap: 10px;
   margin-top: 8px;
 }
 
-.button-group .add-new-btn {
+.add-dialog-button-group .add-new-btn {
   flex: 1;
   margin-top: 0;
 }

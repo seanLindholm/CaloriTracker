@@ -196,7 +196,6 @@ const nutritionalStats = computed(() => {
 .nutrients-section h2 {
   font-size: 20px;
   color: var(--text-color);
-  margin-bottom: 16px;
 }
 
 .nutrients-table tbody tr.nutrient-category {

@@ -243,7 +243,7 @@ function handleClose() {
 
       <!-- Recipe Items -->
       <section class="recipe-items-container" aria-label="Recipe ingredients">
-        <div class="dialog-buttons">
+        <div class="recipe-dialog-buttons">
           <h3>Recipe Items:</h3>
           <div class="button-group">
             <button class="save-btn" @click="saveRecipe">Save</button>
@@ -367,19 +367,7 @@ function handleClose() {
   overflow-y: auto;
 }
 
-.dialog-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.dialog-header h2 {
-  margin: 0;
-  color: var(--text-color);
-}
-
-.close-btn {
+.recipe-dialog-content .close-btn {
   font-size: 28px;
 }
 
@@ -500,16 +488,6 @@ function handleClose() {
   color: var(--text-muted-color);
 }
 
-.remove-btn {
-  padding: 8px 16px;
-  background-color: var(--danger-color);
-  color: white;
-}
-
-.remove-btn:hover {
-  background-color: var(--danger-hover-color);
-}
-
 .dropdown-list {
   position: absolute;
   top: 100%;
@@ -572,18 +550,13 @@ function handleClose() {
   font-weight: bold;
 }
 
-.dialog-buttons {
+.recipe-dialog-buttons {
   justify-content: space-between;
   align-items: center;
 }
 
-.dialog-buttons h3 {
+.recipe-dialog-buttons h3 {
   margin: 0;
-}
-
-.button-group {
-  display: flex;
-  gap: 10px;
 }
 
 .save-btn {

@@ -8,7 +8,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['manage-foods', 'clear-tracked-foods', 'save-tracking', 'show-history']);
+const emit = defineEmits(['manage-foods', 'clear-tracked-foods', 'save-tracking', 'show-history', 'about']);
 
 const menuOpen = ref(false);
 const trackingsMenuOpen = ref(false);
@@ -40,7 +40,7 @@ function handleShowHistory() {
 }
 
 function handleAbout() {
-  alert('Calorie Tracker v1.0\n\nA simple tool to track your daily calorie intake.');
+  emit('about');
   menuOpen.value = false;
 }
 
@@ -84,9 +84,8 @@ function closeMenu() {
       <div class="menu-item-with-submenu">
         <button class="menu-button" @click="toggleTrackingsMenu" :aria-expanded="trackingsMenuOpen" aria-label="Trackings menu">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
-            <rect x="7" y="3" width="10" height="4"></rect>
-            <path d="M7 12h3v5H7z"></path>
+            <path d="M3 17l6-6 4 4 8-8"></path>
+            <path d="M14 7h7v7"></path>
           </svg>
           Trackings
           <svg class="chevron-icon" :class="{ open: trackingsMenuOpen }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -157,9 +156,8 @@ function closeMenu() {
           <div class="menu-item-with-submenu">
             <button class="menu-button" @click="toggleTrackingsMenu" :aria-expanded="trackingsMenuOpen" aria-label="Trackings menu">
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
-                <rect x="7" y="3" width="10" height="4"></rect>
-                <path d="M7 12h3v5H7z"></path>
+                <path d="M3 17l6-6 4 4 8-8"></path>
+                <path d="M14 7h7v7"></path>
               </svg>
               Trackings
               <svg class="chevron-icon" :class="{ open: trackingsMenuOpen }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">

@@ -240,17 +240,13 @@ function closePanel() {
   font-size: 20px;
 }
 
-.close-btn {
+.panel-header .close-btn {
   font-size: 24px;
 }
 
 .search-box {
   margin-bottom: 20px;
   flex-shrink: 0;
-}
-
-.no-foods {
-  padding: 30px;
 }
 
 .table-wrapper {

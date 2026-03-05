@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted, nextTick } from 'vue';
 import NutrionalSummary from './NutrionalSummary.vue';
 
 const props = defineProps({
@@ -10,12 +10,17 @@ const props = defineProps({
   foods: {
     type: Array,
     required: true
+  },
+  calorieGoal: {
+    type: Number,
+    required: true
   }
 });
 
 const emit = defineEmits(['close']);
 
 const selectedDate = ref(null);
+const barsContainer = ref(null);
 
 const historyEntries = computed(() => {
   return Object.entries(props.trackingHistory)
@@ -28,9 +33,10 @@ const historyEntries = computed(() => {
 });
 
 const maxCalories = computed(() => {
-  if (historyEntries.value.length === 0) return 2500;
-  return Math.max(...historyEntries.value.map(e => e.calories), 2500);
+  if (props.calorieGoal == null) return 2500;
+  return props.calorieGoal*1.25;
 });
+
 
 const selectedEntry = computed(() => {
   if (!selectedDate.value) return null;
@@ -56,12 +62,37 @@ function formatShortDate(dateString) {
 }
 
 function getBarHeight(calories) {
-  return Math.min((calories / maxCalories) * 100, 100);
+  return `${Math.round((calories / maxCalories.value) * 100)}%`;
+}
+
+function getBarColor(calories) {
+  if (!props.calorieGoal) return '';
+  const delta = props.calorieGoal - calories;
+  if (delta >= 0 && delta <= 200) return 'bar--green';
+  if (delta > 200 && delta <= 500) return 'bar--yellow';
+  if (delta > 500) return 'bar--red';
+  return 'bar--orange';
 }
 
 function handleClose() {
   emit('close');
 }
+
+function scrollToLatest() {
+  nextTick(() => {
+    if (barsContainer.value) {
+      barsContainer.value.scrollLeft = barsContainer.value.scrollWidth;
+    }
+  });
+}
+
+watch(historyEntries, () => {
+  scrollToLatest();
+});
+
+onMounted(() => {
+  scrollToLatest();
+});
 </script>
 
 <template>
@@ -81,6 +112,9 @@ function handleClose() {
         <section class="chart-section" aria-label="Calorie history chart">
           <h3 class="visually-hidden">Daily Calorie Chart</h3>
           <div class="chart-container">
+            <div class="chart-target" aria-label="Calorie target">
+              Target: {{ Math.round(calorieGoal) }}<br/>
+            </div>
             <div class="chart-y-axis" aria-hidden="true">
               <span>{{ Math.round(maxCalories) }}</span>
               <span>{{ Math.round(maxCalories * 0.75) }}</span>
@@ -88,17 +122,18 @@ function handleClose() {
               <span>{{ Math.round(maxCalories * 0.25) }}</span>
               <span>0</span>
             </div>
-            <div class="chart-bars-container">
+            <div class="chart-bars-container" ref="barsContainer">
               <div class="chart-bars">
                 <button
                   v-for="entry in historyEntries"
                   :key="entry.date"
                   class="bar-wrapper"
+                  :style="{ height: getBarHeight(entry.calories) }"
                   :class="{ selected: selectedDate === entry.date }"
                   @click="selectDate(entry.date)"
                   :aria-label="`${formatDate(entry.date)}: ${Math.round(entry.calories)} calories`"
                 >
-                  <div class="bar" :style="{ height: getBarHeight(entry.calories) + '%' }">
+                  <div class="bar" :class="getBarColor(entry.calories)" >
                     <span class="bar-value">{{ Math.round(entry.calories) }}</span>
                   </div>
                   <span class="bar-label">{{ formatShortDate(entry.date) }}</span>
@@ -132,7 +167,7 @@ function handleClose() {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--overlay-color);
+  background-color: var(--bg-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -141,13 +176,12 @@ function handleClose() {
 
 .history-container {
   background-color: var(--bg-color);
-  border-radius: 12px;
   width: 100%;
   max-width: 1280px;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px var(--shadow-color);
+  overflow-y:auto;
 }
 
 .history-header {
@@ -155,7 +189,9 @@ function handleClose() {
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid var(--border-color);
+  margin:5px;
+  border-radius: 15px;
+  border: 1px solid var(--border-color);
 }
 
 .history-header h2 {
@@ -164,29 +200,13 @@ function handleClose() {
   color: var(--text-color);
 }
 
-.close-btn {
-  background: transparent;
-  border: none;
-  font-size: 32px;
-  color: var(--text-color);
-  cursor: pointer;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-}
-
-.close-btn:hover {
-  background-color: var(--surface-alt-color);
+.history-header .close-btn {
+  font-size: 40px;
 }
 
 .history-content {
-  padding: 24px;
-  overflow-y: auto;
-  flex: 1;
+  padding: 10px;
+  margin-top: 10px;
 }
 
 .no-history {
@@ -203,6 +223,27 @@ function handleClose() {
   display: flex;
   gap: 12px;
   align-items: stretch;
+  position: relative;
+}
+
+.chart-target {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  font-size: 12px;
+  color: var(--text-muted-color);
+  background-color: var(--surface-color);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  z-index: 1;
+  line-height: 1.4;
+  
+}
+
+.target-height {
+  font-weight: 600;
+  color: var(--primary-color);
 }
 
 .chart-y-axis {
@@ -217,26 +258,25 @@ function handleClose() {
 }
 
 .chart-bars-container {
-  flex: 1;
-  overflow: auto;
-  overflow-y: hidden;
-  padding: 10px 0;
+    overflow:auto;
+
 }
 
 .chart-bars {
   display: flex;
   gap: 12px;
   align-items: flex-end;
-  min-height: 250px;
-  padding: 0 12px;
+  min-height: 300px;
+  height: 100%;
+  padding-bottom: 20px;
 }
 
 .bar-wrapper {
   display: flex;
   flex-direction: column;
+    min-width: fit-content;
   align-items: center;
   gap: 8px;
-  min-width: 60px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -245,16 +285,20 @@ function handleClose() {
 }
 
 .bar-wrapper:hover {
-  transform: translateY(-10px);
+  transform: translateY(-5px);
 }
 
 .bar-wrapper.selected .bar {
-  background-color: var(--primary-color);
+  background-color: var(--primary-color)
+}
+
+.bar-wrapper:focus {
+  outline: none;
 }
 
 .bar {
+  height: 100%;
   width: 100%;
-  min-height: 20px;
   background-color: var(--surface-alt-color);
   border-radius: 4px 4px 0 0;
   position: relative;
@@ -269,6 +313,22 @@ function handleClose() {
   background-color: var(--primary-hover-color);
 }
 
+.bar--green {
+  background-color: var(--success-color);
+}
+
+.bar--yellow {
+  background-color: #d9c06b;
+}
+
+.bar--red {
+  background-color: var(--danger-color);
+}
+
+.bar--orange {
+  background-color: #e39b6a;
+}
+
 .bar-value {
   font-size: 11px;
   color: var(--text-color);
@@ -281,12 +341,12 @@ function handleClose() {
   text-align: center;
   word-wrap: break-word;
   max-width: 60px;
+  padding:10px;
 }
 
 .details-section {
   background-color: var(--surface-color);
   border-radius: 8px;
-  padding: 20px;
   border: 1px solid var(--border-color);
 }
 
@@ -294,11 +354,11 @@ function handleClose() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  padding: 0 30px 0 20px;
+    margin-top: 10px;
 }
 
 .details-header h3 {
-  margin: 0;
   font-size: 20px;
   color: var(--text-color);
 }
@@ -326,22 +386,9 @@ function handleClose() {
 }
 
 @media (max-width: 768px) {
-  .history-overlay {
-    padding: 0;
-  }
-
-  .history-container {
-    border-radius: 0;
-    max-height: 100vh;
-    height: 100vh;
-  }
-
   .chart-bars {
-    min-height: 200px;
+    min-height: 235px;
   }
 
-  .bar-wrapper {
-    min-width: 50px;
-  }
 }
 </style>

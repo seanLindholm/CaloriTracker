@@ -8,6 +8,7 @@ import FoodSummary from './components/FoodSummary.vue';
 import NutrionalSummary from './components/NutrionalSummary.vue';
 import Menu from './components/Menu.vue';
 import TrackingHistory from './components/TrackingHistory.vue';
+import About from './components/About.vue';
 import foodsData from './data/foods.json';
 
 const FOODS_STORAGE_KEY = 'calcTrackerFoods';
@@ -27,6 +28,7 @@ const showUserFoodItems = ref(false);
 const showRecipeDialog = ref(false);
 const showSaveDialog = ref(false);
 const showHistory = ref(false);
+const showAboutDialog = ref(false);
 const saveDate = ref(getTodayDateString());
 const trackingHistory = ref(loadTrackingHistory());
 const todayDate = new Date().toLocaleDateString(undefined, {
@@ -90,11 +92,23 @@ function saveTrackedFoods(foods) {
 }
 
 function loadTrackingHistory() {
-  return loadStoredValue(
+  const history = loadStoredValue(
     TRACKING_HISTORY_STORAGE_KEY,
     {},
     value => typeof value === 'object' && value !== null
   );
+  
+  // Remove tracking data older than 3 months on load
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  
+  Object.keys(history).forEach(date => {
+    if (new Date(date) < threeMonthsAgo) {
+      delete history[date];
+    }
+  });
+  
+  return history;
 }
 
 function saveTrackingHistory(history) {
@@ -190,6 +204,10 @@ function handleShowHistory() {
   showHistory.value = true;
 }
 
+function handleAbout() {
+  showAboutDialog.value = true;
+}
+
 function confirmSaveTracking() {
   if (!saveDate.value) {
     alert('Please select a date');
@@ -201,6 +219,16 @@ function confirmSaveTracking() {
     totalCalories: totalCalories.value,
     trackedFoods: trackedFoods.value
   };
+  
+  // Remove tracking data older than 3 months
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  
+  Object.keys(history).forEach(date => {
+    if (new Date(date) < threeMonthsAgo) {
+      delete history[date];
+    }
+  });
   
   trackingHistory.value = history;
   saveTrackingHistory(history);
@@ -224,6 +252,7 @@ function cancelSaveTracking() {
       @clear-tracked-foods="clearDailyRegistrations"
       @save-tracking="handleSaveTracking"
       @show-history="handleShowHistory"
+      @about="handleAbout"
     />
     <header>
       <h1 class="title"> Calorie Tracker </h1>
@@ -270,10 +299,16 @@ function cancelSaveTracking() {
       @close="showRecipeDialog = false"
     />
 
+    <!-- About Dialog -->
+    <About
+      v-if="showAboutDialog"
+      @close="showAboutDialog = false"
+    />
+
     <!-- Save Tracking Dialog -->
     <div v-if="showSaveDialog" class="dialog-overlay-save" role="dialog" aria-modal="true" aria-labelledby="save-dialog-title">
       <div class="save-dialog">
-        <header class="dialog-header">
+        <header class="app-dialog-header">
           <h2 id="save-dialog-title">Save Current Tracking</h2>
           <button class="close-btn" @click="cancelSaveTracking" aria-label="Close dialog">&times;</button>
         </header>
@@ -290,7 +325,7 @@ function cancelSaveTracking() {
           </div>
           <p class="info-text">Note: Saving to an existing date will overwrite the previous data.</p>
         </div>
-        <div class="dialog-buttons">
+        <div class="app-dialog-buttons">
           <button class="save-btn" @click="confirmSaveTracking">Save</button>
           <button class="cancel-btn" @click="cancelSaveTracking">Cancel</button>
         </div>
@@ -302,6 +337,7 @@ function cancelSaveTracking() {
       v-if="showHistory"
       :trackingHistory="trackingHistory"
       :foods="foods"
+      :calorieGoal="calorieGoal"
       @close="showHistory = false"
     />
 
@@ -430,37 +466,12 @@ main {
   box-shadow: 0 4px 20px var(--shadow-color);
 }
 
-.dialog-header {
+.app-dialog-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
   border-bottom: 1px solid var(--border-color);
-}
-
-.dialog-header h2 {
-  margin: 0;
-  font-size: 20px;
-  color: var(--text-color);
-}
-
-.close-btn {
-  background: transparent;
-  border: none;
-  font-size: 32px;
-  color: var(--text-color);
-  cursor: pointer;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-}
-
-.close-btn:hover {
-  background-color: var(--surface-alt-color);
 }
 
 .dialog-content {
@@ -506,12 +517,10 @@ main {
 
 .info-text {
   color: var(--text-muted-color);
-  font-size: 14px;
   margin-top: 12px;
-  font-style: italic;
 }
 
-.dialog-buttons {
+.app-dialog-buttons {
   display: flex;
   gap: 12px;
   padding: 20px 24px;
