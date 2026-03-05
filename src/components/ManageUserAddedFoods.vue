@@ -65,14 +65,16 @@ function closePanel() {
 </script>
 
 <template>
-  <div class="user-foods-panel">
-    <div class="panel-header">
-      <h2>Manage User Added Foods</h2>
-      <button class="close-btn" @click="closePanel">&times;</button>
-    </div>
+  <aside class="user-foods-panel" role="dialog" aria-modal="true" aria-labelledby="manage-foods-heading">
+    <header class="panel-header">
+      <h2 id="manage-foods-heading">Manage User Added Foods</h2>
+      <button class="close-btn" @click="closePanel" aria-label="Close panel">&times;</button>
+    </header>
 
     <div class="search-box">
+      <label for="food-search" class="visually-hidden">Search foods</label>
       <input 
+        id="food-search"
         v-model="searchTerm"
         type="text"
         placeholder="Search foods..."
@@ -80,13 +82,13 @@ function closePanel() {
       />
     </div>
 
-    <div v-if="filteredFoods.length === 0" class="no-foods">
+    <div v-if="filteredFoods.length === 0" class="no-foods" role="status">
       <p v-if="searchTerm">No foods match your search</p>
       <p v-else>No user-added foods yet</p>
     </div>
 
     <div v-else class="table-wrapper themed-scrollbar">
-      <table class="user-foods-table">
+      <table class="user-foods-table" aria-label="User added foods list">
         <colgroup>
           <col class="col-name" />
           <col class="col-unit" />
@@ -119,6 +121,7 @@ function closePanel() {
                 @change="e => updateFood(index, 'name', e.target.value)"
                 class="cell-input"
                 type="text"
+                :aria-label="`Name of ${food.name}`"
               />
             </td>
             <td data-label="Unit">
@@ -126,6 +129,7 @@ function closePanel() {
                 :value="food.unit"
                 @change="e => updateFood(index, 'unit', e.target.value)"
                 class="cell-select"
+                :aria-label="`Unit for ${food.name}`"
               >
                 <option value="gram">gram</option>
                 <option value="ml">ml</option>
@@ -193,13 +197,13 @@ function closePanel() {
               />
             </td>
             <td data-label="Action">
-              <button class="delete-btn" @click="removeFood(index)">Delete</button>
+              <button class="delete-btn" @click="removeFood(index)" :aria-label="`Delete ${food.name}`">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-  </div>
+  </aside>
 </template>
 
 <style scoped>

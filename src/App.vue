@@ -162,19 +162,21 @@ function clearDailyRegistrations() {
       @manage-foods="showUserFoodItems = true"
       @clear-tracked-foods="clearDailyRegistrations"
     />
-    <h1 class="title"> Calorie Tracker </h1>
-    <p class="today-date">{{ todayDate }}</p>
-    <div class="dashboard-layout" alt="main dashboard layout">
-      <div class="summary-panel">
+    <header>
+      <h1 class="title"> Calorie Tracker </h1>
+      <p class="today-date">{{ todayDate }}</p>
+    </header>
+    <section class="dashboard-layout" aria-label="Daily nutrition dashboard">
+      <section class="summary-panel" aria-label="Nutritional breakdown">
         <NutrionalSummary :trackedFoods="trackedFoods" :foods="foods" />
-      </div>
-      <div class="chart-panel">
+      </section>
+      <section class="chart-panel" aria-label="Calorie visualization">
         <PieChart :mealCalories="mealCalories" :calorieGoal="calorieGoal" @update:food="handleUpdateFood" @update:calorieGoal="handleCalorieGoalUpdate"/>
-      </div>
-      <div class="summary-panel">
+      </section>
+      <section class="summary-panel" aria-label="Food intake summary">
         <FoodSummary :trackedFoods="trackedFoods" :foods="foods" />
-      </div>
-    </div>
+      </section>
+    </section>
 
     <!-- Add Food Dialog -->
     <AddFoodDialog 

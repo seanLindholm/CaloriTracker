@@ -175,37 +175,42 @@ function handleClose() {
 </script>
 
 <template>
-  <div class="recipe-dialog-overlay" :class="{ 'closing': isClosing }">
+  <div class="recipe-dialog-overlay" :class="{ 'closing': isClosing }" role="dialog" aria-modal="true" aria-labelledby="recipe-dialog-title">
     <div class="recipe-dialog-content">
-      <div class="dialog-header">
-        <h2>Build Recipe</h2>
-        <button class="close-btn" @click="handleClose">&times;</button>
-      </div>
+      <header class="dialog-header">
+        <h2 id="recipe-dialog-title">Build Recipe</h2>
+        <button class="close-btn" @click="handleClose" aria-label="Close dialog">&times;</button>
+      </header>
 
       <!-- Recipe Name and Portions -->
-      <div class="recipe-info">
-        <div class="form-group">
-          <label>Recipe Name:</label>
-          <input
-            v-model="recipeName"
-            type="text"
-            placeholder="Enter recipe name..."
-            class="search-input"
-          />
+      <form @submit.prevent="saveRecipe">
+        <div class="recipe-info">
+          <div class="form-group">
+            <label for="recipe-name-input">Recipe Name:</label>
+            <input
+              id="recipe-name-input"
+              v-model="recipeName"
+              type="text"
+              placeholder="Enter recipe name..."
+              class="search-input"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="recipe-portions-input">Portions the recipe makes:</label>
+            <input
+              id="recipe-portions-input"
+              v-model="recipePortions"
+              type="number"
+              min="1"
+              class="search-input"
+              required
+            />
+          </div>
         </div>
-        <div class="form-group">
-          <label>Portions the recipe makes:</label>
-          <input
-            v-model="recipePortions"
-            type="number"
-            min="1"
-            class="search-input"
-          />
-        </div>
-      </div>
 
        <!-- Nutrition Summary -->
-      <div class="nutrition-summary">
+      <section class="nutrition-summary" aria-label="Nutrition per portion">
         <h3>Per Portion Nutrition:</h3>
         <div class="nutrition-grid">
           <div class="nutrition-item">
@@ -233,11 +238,11 @@ function handleClose() {
             <span class="nutrition-value">{{ Math.round(perPortionNutrition.fibre * 10) / 10 }}g</span>
           </div>
         </div>
-      </div>
+      </section>
 
 
       <!-- Recipe Items -->
-      <div class="recipe-items-container">
+      <section class="recipe-items-container" aria-label="Recipe ingredients">
         <div class="dialog-buttons">
           <h3>Recipe Items:</h3>
           <div class="button-group">
@@ -247,14 +252,16 @@ function handleClose() {
           </div>
         </div>
 
-        <div v-if="recipeItems.length === 0" class="no-foods">
+        <div v-if="recipeItems.length === 0" class="no-foods" role="status">
           No items added. Click "Add Item" to get started.
         </div>
 
         <div v-else class="recipe-items-list">
           <div v-for="(item, index) in recipeItems" :key="index" class="recipe-item">
             <div class="item-food-select themed-scrollbar">
+              <label :for="`food-search-${index}`" class="visually-hidden">Search for food item</label>
               <input
+                :id="`food-search-${index}`"
                 v-model="itemSearches[index]"
                 type="text"
                 placeholder="Search food..."
@@ -263,12 +270,13 @@ function handleClose() {
                 @focus="selectItemForEditing(index); handleSearchFocus()"
                 @blur="handleSearchBlur"
               />
-              <div class="dropdown-list" v-if="selectedItemIndex === index && isSearchFocused && itemSearches[index]?.trim() && filteredFoods.length > 0">
+              <div class="dropdown-list" v-if="selectedItemIndex === index && isSearchFocused && itemSearches[index]?.trim() && filteredFoods.length > 0" role="listbox">
                 <button
                   v-for="food in filteredFoods"
                   :key="food.id"
                   type="button"
                   class="dropdown-option"
+                  role="option"
                   @mousedown.prevent="selectFoodForItem(index, food)"
                 >
                   {{ food.name }}
@@ -283,7 +291,9 @@ function handleClose() {
               <div v-else class="food-name-placeholder">Select a food</div>
 
               <div class="item-amount">
+                <label :for="`amount-${index}`" class="visually-hidden">Amount</label>
                 <input
+                  :id="`amount-${index}`"
                   v-model.number="item.amount"
                   type="number"
                   placeholder="Amount"
@@ -294,16 +304,12 @@ function handleClose() {
               </div>
             </div>
 
-            <button class="remove-btn" @click="removeRecipeItem(index)">Remove</button>
+            <button class="remove-btn" @click="removeRecipeItem(index)" type="button" :aria-label="`Remove ${props.foods.find(f => f.id === item.foodId)?.name || 'item'}`">Remove</button>
           </div>
         </div>
-      </div>
+      </section>
 
-     
-      <!-- Action Buttons -->
-      <div class="dialog-buttons">
-     
-      </div>
+      </form>
     </div>
   </div>
 </template>

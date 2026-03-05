@@ -96,27 +96,37 @@ function cancelGoalEdit() {
         :aria-label="`Calorie breakdown: ${Math.round(current_calories)} calories total. Breakfast: ${Math.round(mealCalories.breakfast)}, Lunch: ${Math.round(mealCalories.lunch)}, Dinner: ${Math.round(mealCalories.dinner)}, Snack: ${Math.round(mealCalories.snack)}. Total: ${Math.round(current_calories)}/${calorieGoal} calories`"
       >
         <div class="progress-text-container">
-          <div class="progress-text" @click="openGoalEditDialog" title="Click to edit calorie goal">{{Math.round(current_calories)}}/{{calorieGoal}}</div>
+          <button 
+            class="progress-text" 
+            @click="openGoalEditDialog" 
+            :aria-label="`Edit calorie goal. Current: ${Math.round(current_calories)} of ${calorieGoal} calories`"
+          >
+            {{Math.round(current_calories)}}/{{calorieGoal}}
+          </button>
         </div>
-        <button style="z-index: 1;" @click="emits('update:food')">Update foods</button>
+        <button style="z-index: 1;" @click="emits('update:food')" aria-label="Update food intake">Update foods</button>
     </div>
 
     <!-- Calorie Goal Edit Dialog -->
-    <div v-if="showGoalEditDialog" class="goal-edit-overlay">
+    <div v-if="showGoalEditDialog" class="goal-edit-overlay" role="dialog" aria-modal="true" aria-labelledby="goal-dialog-title">
       <div class="goal-edit-dialog">
-        <h3>Set Calorie Goal</h3>
-        <input 
-          v-model.number="tempGoalValue" 
-          type="number" 
-          min="100" 
-          max="10000"
-          class="goal-input"
-          placeholder="Enter daily calorie goal"
-        />
-        <div class="dialog-buttons">
-          <button class="btn-save" @click="saveCalorieGoal">Save</button>
-          <button class="btn-cancel" @click="cancelGoalEdit">Cancel</button>
-        </div>
+        <h3 id="goal-dialog-title">Set Calorie Goal</h3>
+        <form @submit.prevent="saveCalorieGoal">
+          <label for="calorie-goal-input" class="visually-hidden">Daily calorie goal</label>
+          <input 
+            id="calorie-goal-input"
+            v-model.number="tempGoalValue" 
+            type="number" 
+            min="100" 
+            max="10000"
+            class="goal-input"
+            placeholder="Enter daily calorie goal"
+          />
+          <div class="dialog-buttons">
+            <button type="submit" class="btn-save">Save</button>
+            <button type="button" class="btn-cancel" @click="cancelGoalEdit">Cancel</button>
+          </div>
+        </form>
       </div>
     </div>
 </template>
@@ -155,13 +165,12 @@ function cancelGoalEdit() {
 
 .progress-text {
     position: relative;
-    z-index: 1; /* Keeps text above the colored gradient */
     font-size: 30px;
     color: var(--text-color);
     cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    box-shadow: none;
+    border:none;
+    background-color: var(--surface-color);
 }
 
 .progress-text:hover {
@@ -185,6 +194,7 @@ function cancelGoalEdit() {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 5;
 }
 
 .goal-edit-dialog {

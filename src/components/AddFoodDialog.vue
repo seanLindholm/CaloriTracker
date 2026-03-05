@@ -19,7 +19,7 @@ const showAddDialog = ref(false);
 const foodSearch = ref('');
 const selectedFoodId = ref('');
 const isSearchFocused = ref(false);
-const foodAmount = ref(1);
+const foodAmount = ref(null);
 const isClosing = ref(false);
 
 const showAddNewDialog = ref(false);
@@ -111,7 +111,7 @@ function addFoodItem() {
 
   foodSearch.value = '';
   selectedFoodId.value = '';
-  foodAmount.value = 1;
+  foodAmount.value = null;
   showAddDialog.value = false;
 }
 
@@ -215,23 +215,24 @@ function handleClose() {
 </script>
 
 <template>
-  <div class="dialog-overlay" :class="{ 'closing': isClosing }">
+  <div class="dialog-overlay" :class="{ 'closing': isClosing }" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
     <div class="dialog-content">
-      <div class="dialog-header">
-        <h2>Add / Edit Foods</h2>
-        <button class="close-btn" @click="handleClose">&times;</button>
-      </div>
+      <header class="dialog-header">
+        <h2 id="dialog-title">Add / Edit Foods</h2>
+        <button class="close-btn" @click="handleClose" aria-label="Close dialog">&times;</button>
+      </header>
 
       <div class="meal-selector">
-        <select v-model="selectedMealType" class="meal-dropdown">
+        <label for="meal-type-select" class="visually-hidden">Select meal type</label>
+        <select v-model="selectedMealType" id="meal-type-select" class="meal-dropdown">
           <option v-for="meal in mealTypes" :key="meal" :value="meal">
             {{ meal.charAt(0).toUpperCase() + meal.slice(1) }}
           </option>
         </select>
-        <button class="add-btn" @click="showAddDialog = true">+</button>
+        <button class="add-btn" @click="showAddDialog = true" aria-label="Add new food item">+</button>
       </div>
 
-      <div class="meal-foods">
+      <section class="meal-foods" aria-label="Foods for selected meal">
         <div v-if="mealFoods.length === 0" class="no-foods">
           No foods added for {{ selectedMealType }}
         </div>
@@ -254,26 +255,29 @@ function handleClose() {
                     @change="event => updateFoodAmount(index, event.target.value)"
                     class="amount-input"
                     min="1"
+                    :aria-label="`Amount of ${item.foodName}`"
                   />
                   <span class="unit-display">{{ item.measurement || props.foods.find(f => f.id === item.foodId)?.unit || 'unit' }}</span>
                 </div>
               </td>
               <td>
-                <button class="remove-btn" @click="removeFoodItem(index)">Remove</button>
+                <button class="remove-btn" @click="removeFoodItem(index)" :aria-label="`Remove ${item.foodName}`">Remove</button>
               </td>
             </tr>
           </tbody>
         </table>
-      </div>
+      </section>
 
-      <div v-if="showAddDialog" class="add-dialog-overlay">
+      <div v-if="showAddDialog" class="add-dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="add-food-title">
         <div class="add-dialog-box">
-          <h3>Add Food</h3>
+          <h3 id="add-food-title">Add Food</h3>
 
-          <div class="form-group">
-            <label>Search Food:</label>
+          <form @submit.prevent="addFoodItem">
+            <div class="form-group">
+            <label for="food-search-input">Search Food:</label>
             <input
               v-model="foodSearch"
+              required=""
               type="text"
               placeholder="Type food name..."
               class="search-input"
@@ -281,12 +285,13 @@ function handleClose() {
               @blur="handleSearchBlur"
               @input="selectedFoodId = ''"
             />
-            <div class="dropdown-list themed-scrollbar" v-if="isSearchFocused && foodSearch.trim() && filteredFoods.length > 0">
+            <div class="dropdown-list themed-scrollbar" v-if="isSearchFocused && foodSearch.trim() && filteredFoods.length > 0" role="listbox" aria-label="Food search results">
               <button
                 v-for="food in filteredFoods"
                 :key="food.id"
                 type="button"
                 class="dropdown-option"
+                role="option"
                 @mousedown.prevent="selectFood(food)"
               >
                 {{ food.name }}
@@ -308,72 +313,76 @@ function handleClose() {
                 Build recipe
               </button>
             </div>
-          </div>
+            </div>
 
-          <div class="form-group">
-            <label>Amount ({{ selectedFoodUnit }}):</label>
+            <div class="form-group">
+            <label for="food-amount-input">Amount ({{ selectedFoodUnit }}):</label>
             <input
               v-model="foodAmount"
               type="number"
               class="amount-input"
               min="1"
+              required
             />
-          </div>
+            </div>
 
-          <div class="dialog-buttons">
-            <button class="ok-btn" @click="addFoodItem">OK</button>
-            <button class="cancel-btn" @click="showAddDialog = false">Cancel</button>
-          </div>
+            <div class="dialog-buttons">
+            <button type="submit" class="ok-btn">OK</button>
+            <button type="button" class="cancel-btn" @click="showAddDialog = false">Cancel</button>
+            </div>
+          </form>
         </div>
       </div>
 
-      <div v-if="showAddNewDialog" class="add-dialog-overlay">
+      <div v-if="showAddNewDialog" class="add-dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="new-food-title">
         <div class="add-dialog-box">
-          <h3>Add New Food</h3>
+          <h3 id="new-food-title">Add New Food</h3>
 
-          <div class="form-group">
-            <label>Name:</label>
-            <input v-model="newFoodName" type="text" class="search-input" placeholder="Food name" />
-          </div>
+          <form @submit.prevent="addNewFood">
+            <div class="form-group">
+              <label for="new-food-name">Name:</label>
+              <input id="new-food-name" v-model="newFoodName" type="text" class="search-input" placeholder="Food name" required />
+            </div>
 
-          <div class="form-group">
-            <label>Unit:</label>
-            <select v-model="newFoodUnit" class="meal-dropdown">
-              <option value="gram">gram</option>
-              <option value="ml">ml</option>
-              <option value="portion">portion</option>
-            </select>
-          </div>
+            <div class="form-group">
+              <label for="new-food-unit">Unit:</label>
+              <select id="new-food-unit" v-model="newFoodUnit" class="meal-dropdown">
+                <option value="gram">gram</option>
+                <option value="ml">ml</option>
+                <option value="portion">portion</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label>Calories (per 100 units):</label>
-            <input v-model="newFoodCalories" type="number" class="amount-input" min="0" />
-          </div>
+            <div class="form-group">
+              <label for="new-food-calories">Calories (per 100 units):</label>
+              <input id="new-food-calories" v-model="newFoodCalories" type="number" class="amount-input" min="0" required />
+            </div>
 
-          <div class="form-group">
-            <label>Protein (per 100 units):</label>
-            <input v-model="newFoodProtein" type="number" class="amount-input" min="0" />
-          </div>
+            <div class="form-group">
+              <label for="new-food-protein">Protein (per 100 units):</label>
+              <input id="new-food-protein" v-model="newFoodProtein" type="number" class="amount-input" min="0" required />
+            </div>
 
-          <div class="form-group">
-            <label>Carbohydrates (per 100 units):</label>
-            <input v-model="newFoodCarbohydrates" type="number" class="amount-input" min="0" />
-          </div>
+            <div class="form-group">
+              <label for="new-food-carbs">Carbohydrates (per 100 units):</label>
+              <input id="new-food-carbs" v-model="newFoodCarbohydrates" type="number" class="amount-input" min="0" required />
+            </div>
 
-          <div class="form-group">
-            <label>Fat (per 100 units):</label>
-            <input v-model="newFoodFat" type="number" class="amount-input" min="0" />
-          </div>
+            <div class="form-group">
+              <label for="new-food-fat">Fat (per 100 units):</label>
+              <input id="new-food-fat" v-model="newFoodFat" type="number" class="amount-input" min="0" required />
+            </div>
 
-          <div class="form-group">
-            <label>Salt (per 100 units):</label>
-            <input v-model="newFoodSalt" type="number" class="amount-input" min="0" />
-          </div>
+            <div class="form-group">
+              <label for="new-food-salt">Salt (per 100 units):</label>
+              <input id="new-food-salt" v-model="newFoodSalt" type="number" class="amount-input" min="0" required />
+            </div>
 
-          <div class="dialog-buttons">
-            <button class="ok-btn" @click="addNewFood">OK</button>
-            <button class="cancel-btn" @click="showAddNewDialog = false">Cancel</button>
-          </div>
+            <div class="dialog-buttons">
+              <button type="submit" class="ok-btn">OK</button>
+              <button type="button" class="cancel-btn" @click="showAddNewDialog = false">Cancel</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -391,7 +400,6 @@ function handleClose() {
   border-top: 1px solid var(--border-color);
   background-color: var(--surface-color);
   animation: slideUp 0.3s ease-out;
-
 }
 
 @keyframes slideUp {

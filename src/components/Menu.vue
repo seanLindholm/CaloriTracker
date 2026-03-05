@@ -52,16 +52,16 @@ function closeMenu() {
 <template>
   <div class="menu-container">
     <!-- Desktop Banner Menu (width > 1000px) -->
-    <nav class="banner-menu">
-      <button class="menu-button" @click="handleManageFoods" title="Manage food items">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <nav class="banner-menu" aria-label="Main navigation">
+      <button class="menu-button" @click="handleManageFoods" aria-label="Manage food items">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
           <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
         </svg>
         Manage Fooditems
       </button>
-      <button class="menu-button" @click="handleClearTrackedFoods" title="Clear today's registrations">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="menu-button" @click="handleClearTrackedFoods" aria-label="Clear today's registrations">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M3 6h18"></path>
           <path d="M8 6V4h8v2"></path>
           <path d="M19 6l-1 14H6L5 6"></path>
@@ -70,24 +70,24 @@ function closeMenu() {
         </svg>
         Clear Trackedfoods
       </button>
-      <button class="menu-button" @click="handleSaveDate" title="Save date">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="menu-button" @click="handleSaveDate" aria-label="Save date">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
           <rect x="7" y="3" width="10" height="4"></rect>
           <path d="M7 12h3v5H7z"></path>
         </svg>
         Save date
       </button>
-      <button class="menu-button" @click="handleAbout" title="About">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button class="menu-button" @click="handleAbout" aria-label="About">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10"></circle>
           <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
           <path d="M12 17v.01"></path>
         </svg>
         About
       </button>
-      <button class="menu-button" @click="handleSupport" title="Support">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="menu-button" @click="handleSupport" aria-label="Support">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
         </svg>
         Support
@@ -96,8 +96,13 @@ function closeMenu() {
 
     <!-- Mobile Hamburger Menu (width <= 1000px) -->
     <div class="hamburger-menu">
-      <button class="hamburger-btn" @click="toggleMenu" title="Open menu">
-        <svg class="hamburger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button 
+        class="hamburger-btn" 
+        @click="toggleMenu" 
+        :aria-expanded="menuOpen"
+        aria-label="Toggle navigation menu"
+      >
+        <svg class="hamburger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <line x1="3" y1="12" x2="21" y2="12"></line>
           <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -105,18 +110,18 @@ function closeMenu() {
       </button>
 
       <!-- Slide-out Menu -->
-      <div v-if="menuOpen" class="menu-overlay" @click="closeMenu"></div>
+      <div v-if="menuOpen" class="menu-overlay" @click="closeMenu" aria-hidden="true"></div>
 
-      <nav v-if="menuOpen" class="slide-out-menu">
-          <button class="menu-button" @click="handleManageFoods">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <nav v-if="menuOpen" class="slide-out-menu" aria-label="Mobile navigation">
+          <button class="menu-button" @click="handleManageFoods" aria-label="Manage food items">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
             Manage Fooditems
           </button>
-          <button class="menu-button" @click="handleClearTrackedFoods">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="menu-button" @click="handleClearTrackedFoods" aria-label="Clear today's registrations">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M3 6h18"></path>
               <path d="M8 6V4h8v2"></path>
               <path d="M19 6l-1 14H6L5 6"></path>
@@ -125,24 +130,24 @@ function closeMenu() {
             </svg>
             Clear Trackedfoods
           </button>
-          <button class="menu-button" @click="handleSaveDate">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="menu-button" @click="handleSaveDate" aria-label="Save date">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
               <rect x="7" y="3" width="10" height="4"></rect>
               <path d="M7 12h3v5H7z"></path>
             </svg>
             Save date
           </button>
-          <button class="menu-button" @click="handleAbout">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="menu-button" @click="handleAbout" aria-label="About">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
               <path d="M12 17v.01"></path>
             </svg>
             About
           </button>
-          <button class="menu-button" @click="handleSupport">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="menu-button" @click="handleSupport" aria-label="Support">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
             Support

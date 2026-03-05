@@ -54,15 +54,15 @@ const hasAnyFoods = computed(() => {
 </script>
 
 <template>
-  <div class="food-summary">
-    <h2>Food Summary</h2>
+  <section class="food-summary" aria-labelledby="food-summary-heading">
+    <h2 id="food-summary-heading">Food Summary</h2>
 
-    <div v-if="!hasAnyFoods" class="no-foods">
+    <div v-if="!hasAnyFoods" class="no-foods" role="status">
       No foods added yet
     </div>
 
     <div v-else class="food-summary-scroll themed-scrollbar">
-      <table class="food-summary-table">
+      <table class="food-summary-table" aria-label="Food summary by meal">
         <thead>
           <tr>
             <th>Food</th>
@@ -84,7 +84,7 @@ const hasAnyFoods = computed(() => {
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>

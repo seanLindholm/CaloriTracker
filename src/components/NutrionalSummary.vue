@@ -53,10 +53,10 @@ const nutritionalStats = computed(() => {
 </script>
 
 <template>
-  <div class="nutrients-section">
-    <h2>Nutritional Summary</h2>
+  <section class="nutrients-section" aria-labelledby="nutrients-heading">
+    <h2 id="nutrients-heading">Nutritional Summary</h2>
     <div class="nutrients-scroll themed-scrollbar">
-      <table class="nutrients-table">
+      <table class="nutrients-table" aria-label="Nutritional information">
         <thead>
           <tr>
             <th>Nutrient</th>
@@ -101,6 +101,11 @@ const nutritionalStats = computed(() => {
         <tr
           class="nutrient-category collapsible"
           @click="vitaminsExpanded = !vitaminsExpanded"
+          role="button"
+          :aria-expanded="vitaminsExpanded"
+          tabindex="0"
+          @keydown.enter="vitaminsExpanded = !vitaminsExpanded"
+          @keydown.space.prevent="vitaminsExpanded = !vitaminsExpanded"
         >
           <td colspan="3">
             Vitamins
@@ -177,7 +182,7 @@ const nutritionalStats = computed(() => {
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>
