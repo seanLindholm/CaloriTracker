@@ -103,8 +103,8 @@ const nutritionalStats = computed(() => {
           @click="vitaminsExpanded = !vitaminsExpanded"
         >
           <td colspan="3">
-            <span class="chevron" :class="{ expanded: vitaminsExpanded }">▶</span>
             Vitamins
+            <span class="chevron" :class="{ expanded: vitaminsExpanded }"></span>
           </td>
         </tr>
         <template v-if="vitaminsExpanded">
@@ -218,13 +218,16 @@ const nutritionalStats = computed(() => {
 
 .chevron {
   display: inline-block;
-  transition: transform 0.3s ease;
-  margin-right: 8px;
-  font-size: 11px;
+  margin-left: 8px;
+  font-size: 16px;
 }
 
-.chevron.expanded {
-  transform: rotate(90deg);
+.chevron::after {
+  content: '+';
+}
+
+.chevron.expanded::after {
+  content:'-';
 }
 
 @media (min-width: 1000px) {
