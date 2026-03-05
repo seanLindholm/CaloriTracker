@@ -3,6 +3,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+ 
 }
 
 /*Define colors, fonts, and spacing in :root for easy management.*/
@@ -34,12 +35,15 @@
   --meal-snack-color: #947ab9;
   --summary-scroll-max-height: 400px;
   --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  --spacing-unit: 1rem;
+  --font-size: 16px;
+  --font-size-info: 13px;
+  --font-size-info-smaller: 12px;
 }
 
 /*Set the base font, line height, and color on the body.*/
 body {
   font-family: var(--font-family);
+  font-size: var(--font-size);
   line-height: 1.5;
   color: var(--text-color);
   background-color: var(--bg-color);
@@ -84,7 +88,6 @@ input[type="number"] {
   border-radius: 4px;
   background-color: var(--input-bg);
   color: var(--text-color);
-  font-size: 14px;
   box-sizing: border-box;
 }
 
@@ -111,7 +114,7 @@ input[type="number"] {
 button {
   padding: 10px 20px;
   font-family: var(--font-family);
-  font-size: 14px;
+  font-size: var(--font-size-info-smaller);
   font-weight: 500;
   border: none;
   border-radius: 6px;
@@ -156,19 +159,16 @@ table thead {
 table th {
   padding: 12px 16px;
   text-align: left;
-  font-weight: 600;
   color: var(--text-color);
-  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   border-bottom: 2px solid var(--border-color);
+  font-size: 14px;
 }
 
 table td {
   padding: 12px 16px;
   color: var(--text-color);
   border-bottom: 1px solid var(--border-color);
-  font-size: 14px;
 }
 
 table tbody tr {
@@ -193,7 +193,6 @@ table select {
   background-color: var(--input-bg);
   color: var(--text-color);
   font-family: var(--font-family);
-  font-size: 13px;
   transition: all 0.2s ease;
 }
 

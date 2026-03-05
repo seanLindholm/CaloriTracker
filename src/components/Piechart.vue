@@ -98,7 +98,7 @@ function cancelGoalEdit() {
         <div class="progress-text-container">
           <div class="progress-text" @click="openGoalEditDialog" title="Click to edit calorie goal">{{Math.round(current_calories)}}/{{calorieGoal}}</div>
         </div>
-        <button :style="'z-index: 1;'" @click="emits('update:food')">Update foods</button>
+        <button style="z-index: 1;" @click="emits('update:food')">Update foods</button>
     </div>
 
     <!-- Calorie Goal Edit Dialog -->
@@ -181,11 +181,10 @@ function cancelGoalEdit() {
     left: 0;
     right: 0;
     bottom: 0;
-  background-color: var(--overlay-color);
+    background-color: var(--overlay-color);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
 }
 
 .goal-edit-dialog {
@@ -194,7 +193,7 @@ function cancelGoalEdit() {
     border-radius: 8px;
     padding: 24px;
     min-width: 300px;
-  box-shadow: 0 4px 12px var(--shadow-color);
+    box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .goal-edit-dialog h3 {
@@ -210,7 +209,6 @@ function cancelGoalEdit() {
     border-radius: 4px;
     background-color: var(--input-bg);
     color: var(--text-color);
-    font-size: 16px;
     margin-bottom: 20px;
     box-sizing: border-box;
 }
@@ -225,7 +223,6 @@ function cancelGoalEdit() {
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
-    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }

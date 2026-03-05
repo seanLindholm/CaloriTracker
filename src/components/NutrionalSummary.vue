@@ -212,14 +212,13 @@ const nutritionalStats = computed(() => {
 
 .nutrients-table tbody tr.nutrient-category td {
   padding: 10px 16px;
-  font-size: 13px;
+
   letter-spacing: 0.5px;
 }
 
 .chevron {
   display: inline-block;
   margin-left: 8px;
-  font-size: 16px;
 }
 
 .chevron::after {
@@ -246,12 +245,11 @@ const nutritionalStats = computed(() => {
 
   .nutrients-table thead th {
     padding: 10px 8px;
-    font-size: 13px;
+
   }
 
   .nutrients-table tbody td {
     padding: 10px 8px;
-    font-size: 14px;
   }
 }
 </style>

@@ -227,6 +227,7 @@ main {
   width: 100vw;
   text-align: center;
   padding-top: 10px;
+  font-size: xx-large;
 }
 
 .today-date {

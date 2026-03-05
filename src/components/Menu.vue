@@ -192,18 +192,16 @@ function closeMenu() {
 }
 
 .hamburger-btn {
-  position: fixed;
-  top: 10px;
-  left: max(10px, calc((100vw - 1280px) / 2));
-  padding: 10px;
-  border: none;
-  border-radius: 40px;
-  background-color: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    border-radius: 40px;
+    background-color: transparent;
+    cursor: pointer;
 }
 
 .hamburger-btn:hover {
@@ -224,7 +222,7 @@ function closeMenu() {
   right: 0;
   bottom: 0;
   background-color: var(--overlay-color);
-  z-index: 99;
+  z-index: 2;
 }
 
 /* Slide-out Menu */
@@ -239,7 +237,7 @@ function closeMenu() {
   flex-direction: column;
   gap: 0;
   padding: 60px 0 20px 0;
-  z-index: 101;
+  z-index: 2;
   box-shadow: 2px 0 8px var(--shadow-color);
   overflow-y: auto;
 }
@@ -254,17 +252,9 @@ function closeMenu() {
   background-color: transparent;
   cursor: pointer;
   color: var(--text-color);
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.5s ease;
   white-space: nowrap;
 }
 
-.banner-menu .menu-button {
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 13px;
-}
 
 .banner-menu .menu-button:hover {
   background-color: var(--surface-alt-color);

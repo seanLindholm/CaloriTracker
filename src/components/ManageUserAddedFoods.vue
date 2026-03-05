@@ -210,7 +210,7 @@ function closePanel() {
   right: 0;
   bottom: 0;
   background-color: var(--surface-color);
-  z-index: 999;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -257,7 +257,6 @@ function closePanel() {
 .user-foods-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
   table-layout: fixed;
 }
 
@@ -312,7 +311,6 @@ function closePanel() {
   border-radius: 3px;
   background-color: var(--input-bg);
   color: var(--text-color);
-  font-size: 12px;
   box-sizing: border-box;
 }
 
@@ -329,7 +327,6 @@ function closePanel() {
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 11px;
 }
 
 .delete-btn:hover {

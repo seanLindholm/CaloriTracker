@@ -241,9 +241,9 @@ function handleClose() {
         <div class="dialog-buttons">
           <h3>Recipe Items:</h3>
           <div class="button-group">
-            <button class="save-btn" @click="saveRecipe">Save Recipe</button>
+            <button class="save-btn" @click="saveRecipe">Save</button>
             <button class="cancel-btn" @click="handleClose">Cancel</button>
-            <button class="add-item-btn" @click="addRecipeItem">+ Add Item</button>
+            <button class="add-item-btn" @click="addRecipeItem">+ items</button>
           </div>
         </div>
 
@@ -318,7 +318,7 @@ function handleClose() {
   background-color: var(--overlay-color);
   display: flex;
   align-items: flex-end;
-  z-index: 1000;
+  z-index: 3;
   animation: slideUp 0.3s ease-out forwards;
 }
 
@@ -392,7 +392,7 @@ function handleClose() {
 
 .form-group label {
   color: var(--text-color);
-  font-size: 14px;
+
   font-weight: 500;
 }
 
@@ -419,7 +419,7 @@ function handleClose() {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+ 
   font-weight: bold;
 }
 
@@ -462,7 +462,7 @@ function handleClose() {
   border: 1px solid var(--border-color);
   border-radius: 3px;
   color: var(--text-color);
-  font-size: 14px;
+
   min-height: 32px;
   display: flex;
   align-items: center;
@@ -497,7 +497,7 @@ function handleClose() {
 
 .unit {
   color: var(--text-muted-color);
-  font-size: 13px;
+
 }
 
 .remove-btn {
@@ -507,7 +507,7 @@ function handleClose() {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+
 }
 
 .remove-btn:hover {
@@ -524,7 +524,6 @@ function handleClose() {
   border-top: none;
   max-height: 200px;
   overflow-y: auto;
-  z-index: 10;
   border-radius: 0 0 4px 4px;
 }
 
@@ -536,7 +535,7 @@ function handleClose() {
   text-align: left;
   color: var(--text-color);
   cursor: pointer;
-  font-size: 14px;
+
 }
 
 .dropdown-option:hover {
@@ -573,13 +572,13 @@ function handleClose() {
 
 .nutrition-label {
   color: var(--text-muted-color);
-  font-size: 13px;
+
   font-weight: 500;
 }
 
 .nutrition-value {
   color: var(--text-color);
-  font-size: 14px;
+
   font-weight: bold;
 }
 
@@ -606,7 +605,7 @@ function handleClose() {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+
   font-weight: bold;
 }
 
@@ -621,7 +620,7 @@ function handleClose() {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+
 }
 
 .cancel-btn:hover {

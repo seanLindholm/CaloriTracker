@@ -281,7 +281,7 @@ function handleClose() {
               @blur="handleSearchBlur"
               @input="selectedFoodId = ''"
             />
-            <div class="dropdown-list" v-if="isSearchFocused && foodSearch.trim() && filteredFoods.length > 0">
+            <div class="dropdown-list themed-scrollbar" v-if="isSearchFocused && foodSearch.trim() && filteredFoods.length > 0">
               <button
                 v-for="food in filteredFoods"
                 :key="food.id"
@@ -387,10 +387,11 @@ function handleClose() {
   left: 0;
   right: 0;
   height: 65vh;
+  z-index: 2;
   border-top: 1px solid var(--border-color);
   background-color: var(--surface-color);
   animation: slideUp 0.3s ease-out;
-  z-index: 1000;
+
 }
 
 @keyframes slideUp {
@@ -461,7 +462,6 @@ function handleClose() {
   border-radius: 4px;
   background-color: var(--input-bg);
   color: var(--text-color);
-  font-size: 14px;
 }
 
 .add-btn {
@@ -487,7 +487,6 @@ function handleClose() {
 .foods-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
   border: 1px solid var(--border-color);
 }
 
@@ -528,7 +527,6 @@ function handleClose() {
 
 .unit-display {
   color: var(--text-muted-color);
-  font-size: 13px;
   white-space: nowrap;
 }
 
@@ -539,7 +537,6 @@ function handleClose() {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
 }
 
 .remove-btn:hover {
@@ -556,7 +553,6 @@ function handleClose() {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1001;
 }
 
 .add-dialog-box {
@@ -602,7 +598,6 @@ function handleClose() {
   border: none;
   color: var(--text-color);
   cursor: pointer;
-  font-size: 14px;
 }
 
 .dropdown-option:hover {
@@ -617,7 +612,6 @@ function handleClose() {
   border: 1px dashed var(--border-color);
   border-radius: 4px;
   cursor: pointer;
-  font-size: 13px;
 }
 
 .add-new-btn:hover {
