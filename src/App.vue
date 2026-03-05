@@ -271,7 +271,7 @@ function cancelSaveTracking() {
     />
 
     <!-- Save Tracking Dialog -->
-    <div v-if="showSaveDialog" class="dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="save-dialog-title">
+    <div v-if="showSaveDialog" class="dialog-overlay-save" role="dialog" aria-modal="true" aria-labelledby="save-dialog-title">
       <div class="save-dialog">
         <header class="dialog-header">
           <h2 id="save-dialog-title">Save Current Tracking</h2>
@@ -409,9 +409,9 @@ main {
   color: var(--primary-hover-color);
 }
 
-.dialog-overlay {
+.dialog-overlay-save {
   position: fixed;
-  top: 0;
+  top:0;
   left: 0;
   right: 0;
   bottom: 0;
