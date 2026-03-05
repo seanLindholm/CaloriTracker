@@ -61,7 +61,7 @@ const hasAnyFoods = computed(() => {
       No foods added yet
     </div>
 
-    <div v-else class="food-summary-scroll themed-scrollbar">
+    <div v-else class="food-summary-scroll">
       <table class="food-summary-table" aria-label="Food summary by meal">
         <thead>
           <tr>

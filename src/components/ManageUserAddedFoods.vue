@@ -87,7 +87,7 @@ function closePanel() {
       <p v-else>No user-added foods yet</p>
     </div>
 
-    <div v-else class="table-wrapper themed-scrollbar">
+    <div v-else class="table-wrapper">
       <table class="user-foods-table" aria-label="User added foods list">
         <colgroup>
           <col class="col-name" />

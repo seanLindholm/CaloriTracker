@@ -8,9 +8,10 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['manage-foods', 'clear-tracked-foods']);
+const emit = defineEmits(['manage-foods', 'clear-tracked-foods', 'save-tracking', 'show-history']);
 
 const menuOpen = ref(false);
+const trackingsMenuOpen = ref(false);
 
 function handleManageFoods() {
   emit('manage-foods');
@@ -22,11 +23,19 @@ function handleClearTrackedFoods() {
   menuOpen.value = false;
 }
 
-function handleSaveDate() {
-  // Save current state with date
-  const currentDate = new Date().toISOString();
-  localStorage.setItem('lastSaveDate', currentDate);
-  alert('Date saved successfully!');
+function toggleTrackingsMenu() {
+  trackingsMenuOpen.value = !trackingsMenuOpen.value;
+}
+
+function handleSaveTracking() {
+  emit('save-tracking');
+  trackingsMenuOpen.value = false;
+  menuOpen.value = false;
+}
+
+function handleShowHistory() {
+  emit('show-history');
+  trackingsMenuOpen.value = false;
   menuOpen.value = false;
 }
 
@@ -42,10 +51,12 @@ function handleSupport() {
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value;
+  trackingsMenuOpen.value = false;
 }
 
 function closeMenu() {
   menuOpen.value = false;
+  trackingsMenuOpen.value = false;
 }
 </script>
 
@@ -70,14 +81,27 @@ function closeMenu() {
         </svg>
         Clear Trackedfoods
       </button>
-      <button class="menu-button" @click="handleSaveDate" aria-label="Save date">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
-          <rect x="7" y="3" width="10" height="4"></rect>
-          <path d="M7 12h3v5H7z"></path>
-        </svg>
-        Save date
-      </button>
+      <div class="menu-item-with-submenu">
+        <button class="menu-button" @click="toggleTrackingsMenu" :aria-expanded="trackingsMenuOpen" aria-label="Trackings menu">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
+            <rect x="7" y="3" width="10" height="4"></rect>
+            <path d="M7 12h3v5H7z"></path>
+          </svg>
+          Trackings
+          <svg class="chevron-icon" :class="{ open: trackingsMenuOpen }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div v-if="trackingsMenuOpen" class="submenu">
+          <button class="submenu-button" @click="handleSaveTracking" aria-label="Save current tracking">
+            Save current
+          </button>
+          <button class="submenu-button" @click="handleShowHistory" aria-label="See tracking history">
+            See history
+          </button>
+        </div>
+      </div>
       <button class="menu-button" @click="handleAbout" aria-label="About">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10"></circle>
@@ -130,14 +154,27 @@ function closeMenu() {
             </svg>
             Clear Trackedfoods
           </button>
-          <button class="menu-button" @click="handleSaveDate" aria-label="Save date">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
-              <rect x="7" y="3" width="10" height="4"></rect>
-              <path d="M7 12h3v5H7z"></path>
-            </svg>
-            Save date
-          </button>
+          <div class="menu-item-with-submenu">
+            <button class="menu-button" @click="toggleTrackingsMenu" :aria-expanded="trackingsMenuOpen" aria-label="Trackings menu">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path>
+                <rect x="7" y="3" width="10" height="4"></rect>
+                <path d="M7 12h3v5H7z"></path>
+              </svg>
+              Trackings
+              <svg class="chevron-icon" :class="{ open: trackingsMenuOpen }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div v-if="trackingsMenuOpen" class="submenu mobile-submenu">
+              <button class="submenu-button" @click="handleSaveTracking" aria-label="Save current tracking">
+                Save current
+              </button>
+              <button class="submenu-button" @click="handleShowHistory" aria-label="See tracking history">
+                See history
+              </button>
+            </div>
+          </div>
           <button class="menu-button" @click="handleAbout" aria-label="About">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
@@ -188,6 +225,7 @@ function closeMenu() {
   display: flex;
   align-items: center;
   position: relative;
+  z-index: 1000;
 }
 
 @media (min-width: 1000px) {
@@ -280,5 +318,78 @@ function closeMenu() {
   height: 18px;
   flex-shrink: 0;
   color: var(--text-color);
+}
+
+.chevron-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+.menu-item-with-submenu {
+  position: relative;
+}
+
+.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  min-width: 160px;
+  z-index: 10;
+  margin-top: 4px;
+}
+
+.submenu-button {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.submenu-button:hover {
+  background-color: var(--surface-alt-color);
+}
+
+.submenu-button:first-child {
+  border-radius: 6px 6px 0 0;
+}
+
+.submenu-button:last-child {
+  border-radius: 0 0 6px 6px;
+}
+
+.mobile-submenu {
+  position: static;
+  margin-top: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: var(--surface-alt-color);
+  padding-left: 20px;
+}
+
+.mobile-submenu .submenu-button {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.mobile-submenu .submenu-button:first-child,
+.mobile-submenu .submenu-button:last-child {
+  border-radius: 0;
 }
 </style>

@@ -258,7 +258,7 @@ function handleClose() {
 
         <div v-else class="recipe-items-list">
           <div v-for="(item, index) in recipeItems" :key="index" class="recipe-item">
-            <div class="item-food-select themed-scrollbar">
+            <div class="item-food-select">
               <label :for="`food-search-${index}`" class="visually-hidden">Search for food item</label>
               <input
                 :id="`food-search-${index}`"

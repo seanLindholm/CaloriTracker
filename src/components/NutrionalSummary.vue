@@ -55,7 +55,7 @@ const nutritionalStats = computed(() => {
 <template>
   <section class="nutrients-section" aria-labelledby="nutrients-heading">
     <h2 id="nutrients-heading">Nutritional Summary</h2>
-    <div class="nutrients-scroll themed-scrollbar">
+    <div class="nutrients-scroll">
       <table class="nutrients-table" aria-label="Nutritional information">
         <thead>
           <tr>

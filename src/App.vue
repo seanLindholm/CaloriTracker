@@ -7,11 +7,13 @@ import UserAddRecipeItems from './components/UserAddRecipeItems.vue';
 import FoodSummary from './components/FoodSummary.vue';
 import NutrionalSummary from './components/NutrionalSummary.vue';
 import Menu from './components/Menu.vue';
+import TrackingHistory from './components/TrackingHistory.vue';
 import foodsData from './data/foods.json';
 
 const FOODS_STORAGE_KEY = 'calcTrackerFoods';
 const CALORIE_GOAL_STORAGE_KEY = 'calcTrackerCalorieGoal';
 const TRACKED_FOODS_STORAGE_KEY = 'calcTrackerTrackedFoods';
+const TRACKING_HISTORY_STORAGE_KEY = 'calcTrackerTrackingHistory';
 const DEFAULT_CALORIE_GOAL = 2000;
 
 const trackedFoods = ref(loadTrackedFoods());
@@ -23,12 +25,24 @@ const foods = computed(() => {
 const showFoodDialog = ref(false);
 const showUserFoodItems = ref(false);
 const showRecipeDialog = ref(false);
+const showSaveDialog = ref(false);
+const showHistory = ref(false);
+const saveDate = ref(getTodayDateString());
+const trackingHistory = ref(loadTrackingHistory());
 const todayDate = new Date().toLocaleDateString(undefined, {
   weekday: 'long',
   year: 'numeric',
   month: 'long',
   day: 'numeric'
 });
+
+function getTodayDateString() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
 function loadUserFoods() {
   return loadStoredValue(
@@ -73,6 +87,18 @@ function loadTrackedFoods() {
 
 function saveTrackedFoods(foods) {
   saveStoredValue(TRACKED_FOODS_STORAGE_KEY, foods);
+}
+
+function loadTrackingHistory() {
+  return loadStoredValue(
+    TRACKING_HISTORY_STORAGE_KEY,
+    {},
+    value => typeof value === 'object' && value !== null
+  );
+}
+
+function saveTrackingHistory(history) {
+  saveStoredValue(TRACKING_HISTORY_STORAGE_KEY, history);
 }
 
 function loadStoredValue(key, fallbackValue, isValid) {
@@ -124,6 +150,10 @@ const mealCalories = computed(() => {
   return meals;
 });
 
+const totalCalories = computed(() => {
+  return Object.values(mealCalories.value).reduce((sum, cal) => sum + cal, 0);
+});
+
 function handleUpdateFood() {
   showFoodDialog.value = true;
 }
@@ -152,6 +182,37 @@ function clearDailyRegistrations() {
   saveTrackedFoods([]);
 }
 
+function handleSaveTracking() {
+  showSaveDialog.value = true;
+}
+
+function handleShowHistory() {
+  showHistory.value = true;
+}
+
+function confirmSaveTracking() {
+  if (!saveDate.value) {
+    alert('Please select a date');
+    return;
+  }
+
+  const history = { ...trackingHistory.value };
+  history[saveDate.value] = {
+    totalCalories: totalCalories.value,
+    trackedFoods: trackedFoods.value
+  };
+  
+  trackingHistory.value = history;
+  saveTrackingHistory(history);
+  showSaveDialog.value = false;
+  alert(`Tracking saved for ${saveDate.value}`);
+}
+
+function cancelSaveTracking() {
+  showSaveDialog.value = false;
+  saveDate.value = getTodayDateString();
+}
+
 
 </script>
 
@@ -161,6 +222,8 @@ function clearDailyRegistrations() {
       :trackedFoods="trackedFoods" 
       @manage-foods="showUserFoodItems = true"
       @clear-tracked-foods="clearDailyRegistrations"
+      @save-tracking="handleSaveTracking"
+      @show-history="handleShowHistory"
     />
     <header>
       <h1 class="title"> Calorie Tracker </h1>
@@ -205,6 +268,41 @@ function clearDailyRegistrations() {
       :foods="foods"
       @update:foods="handleUserFoodsUpdate"
       @close="showRecipeDialog = false"
+    />
+
+    <!-- Save Tracking Dialog -->
+    <div v-if="showSaveDialog" class="dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="save-dialog-title">
+      <div class="save-dialog">
+        <header class="dialog-header">
+          <h2 id="save-dialog-title">Save Current Tracking</h2>
+          <button class="close-btn" @click="cancelSaveTracking" aria-label="Close dialog">&times;</button>
+        </header>
+        <div class="dialog-content">
+          <p class="total-calories">Total Calories: <strong>{{ Math.round(totalCalories) }}</strong></p>
+          <div class="form-group">
+            <label for="save-date-input">Select Date:</label>
+            <input 
+              id="save-date-input"
+              v-model="saveDate" 
+              type="date" 
+              class="date-input"
+            />
+          </div>
+          <p class="info-text">Note: Saving to an existing date will overwrite the previous data.</p>
+        </div>
+        <div class="dialog-buttons">
+          <button class="save-btn" @click="confirmSaveTracking">Save</button>
+          <button class="cancel-btn" @click="cancelSaveTracking">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracking History -->
+    <TrackingHistory
+      v-if="showHistory"
+      :trackingHistory="trackingHistory"
+      :foods="foods"
+      @close="showHistory = false"
     />
 
     <footer class="app-footer">
@@ -309,6 +407,144 @@ main {
 
 .app-footer a:hover {
   color: var(--primary-hover-color);
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--overlay-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.save-dialog {
+  background-color: var(--bg-color);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--text-color);
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 32px;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.close-btn:hover {
+  background-color: var(--surface-alt-color);
+}
+
+.dialog-content {
+  padding: 24px;
+}
+
+.total-calories {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.total-calories strong {
+  color: var(--primary-color);
+  font-size: 24px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.date-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.info-text {
+  color: var(--text-muted-color);
+  font-size: 14px;
+  margin-top: 12px;
+  font-style: italic;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border-color);
+  justify-content: flex-end;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.cancel-btn {
+  background-color: var(--surface-alt-color);
+  color: var(--text-color);
+}
+
+.cancel-btn:hover {
+  background-color: var(--border-color);
 }
 
 </style>

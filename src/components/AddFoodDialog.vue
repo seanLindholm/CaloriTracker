@@ -285,7 +285,7 @@ function handleClose() {
               @blur="handleSearchBlur"
               @input="selectedFoodId = ''"
             />
-            <div class="dropdown-list themed-scrollbar" v-if="isSearchFocused && foodSearch.trim() && filteredFoods.length > 0" role="listbox" aria-label="Food search results">
+            <div class="dropdown-list" v-if="isSearchFocused && foodSearch.trim() && filteredFoods.length > 0" role="listbox" aria-label="Food search results">
               <button
                 v-for="food in filteredFoods"
                 :key="food.id"
