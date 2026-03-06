@@ -35,6 +35,15 @@ const selectedRecipeItems = computed(() => {
   return recipeItems.value.filter(item => item.foodId !== null && item.foodId !== undefined);
 });
 
+function parseLocaleFloat(value) {
+  if (value === null || value === undefined) {
+    return Number.NaN;
+  }
+
+  const normalized = String(value).trim().replace(',', '.');
+  return Number.parseFloat(normalized);
+}
+
 // Calculate total nutrition for the recipe
 const totalNutrition = computed(() => {
   const nutritionFields = [
@@ -52,12 +61,12 @@ const totalNutrition = computed(() => {
   selectedRecipeItems.value.forEach(item => {
     const food = props.foods.find(f => f.id === item.foodId);
     if (food) {
-      const amount = parseFloat(item.amount) || 0;
+      const amount = parseLocaleFloat(item.amount) || 0;
       // Calculate based on unit
       const multiplier = amount / 100;
 
       nutritionFields.forEach(field => {
-        const value = parseFloat(food[field]) || 0;
+        const value = parseLocaleFloat(food[field]) || 0;
         totals[field] += value * multiplier;
       });
     }
@@ -294,8 +303,9 @@ function handleClose() {
                 <label :for="`amount-${index}`" class="visually-hidden">Amount</label>
                 <input
                   :id="`amount-${index}`"
-                  v-model.number="item.amount"
-                  type="number"
+                  v-model="item.amount"
+                  type="text"
+                  inputmode="decimal"
                   placeholder="Amount"
                   min="1"
                   step="0.1"

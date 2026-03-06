@@ -28,6 +28,15 @@ const filteredFoods = computed(() => {
   );
 });
 
+function parseLocaleFloat(value) {
+  if (value === null || value === undefined) {
+    return Number.NaN;
+  }
+
+  const normalized = String(value).trim().replace(',', '.');
+  return Number.parseFloat(normalized);
+}
+
 function updateFood(index, field, value) {
   const updatedFoods = [...props.foods];
   const globalIndex = props.foods.findIndex(
@@ -39,7 +48,8 @@ function updateFood(index, field, value) {
   } else if (field === 'unit') {
     updatedFoods[globalIndex].unit = value;
   } else if (['calories', 'protein', 'carbohydrates', 'fat', 'salt', 'fibre'].includes(field)) {
-    updatedFoods[globalIndex][field] = parseFloat(value) || 0;
+    const parsedValue = parseLocaleFloat(value);
+    updatedFoods[globalIndex][field] = Number.isNaN(parsedValue) ? 0 : parsedValue;
   }
   
   emits('update:foods', updatedFoods);
@@ -141,9 +151,8 @@ function closePanel() {
                 :value="food.calories"
                 @change="e => updateFood(index, 'calories', e.target.value)"
                 class="cell-input"
-                type="number"
-                min="0"
-                step="0.1"
+                type="text"
+                inputmode="decimal"
               />
             </td>
             <td data-label="Protein">
@@ -151,9 +160,8 @@ function closePanel() {
                 :value="food.protein"
                 @change="e => updateFood(index, 'protein', e.target.value)"
                 class="cell-input"
-                type="number"
-                min="0"
-                step="0.1"
+                type="text"
+                inputmode="decimal"
               />
             </td>
             <td data-label="Carbs">
@@ -161,9 +169,8 @@ function closePanel() {
                 :value="food.carbohydrates"
                 @change="e => updateFood(index, 'carbohydrates', e.target.value)"
                 class="cell-input"
-                type="number"
-                min="0"
-                step="0.1"
+                type="text"
+                inputmode="decimal"
               />
             </td>
             <td data-label="Fat">
@@ -171,9 +178,8 @@ function closePanel() {
                 :value="food.fat"
                 @change="e => updateFood(index, 'fat', e.target.value)"
                 class="cell-input"
-                type="number"
-                min="0"
-                step="0.1"
+                type="text"
+                inputmode="decimal"
               />
             </td>
             <td data-label="Salt">
@@ -181,9 +187,8 @@ function closePanel() {
                 :value="food.salt"
                 @change="e => updateFood(index, 'salt', e.target.value)"
                 class="cell-input"
-                type="number"
-                min="0"
-                step="0.1"
+                type="text"
+                inputmode="decimal"
               />
             </td>
             <td data-label="Fibre">
@@ -191,9 +196,8 @@ function closePanel() {
                 :value="food.fibre"
                 @change="e => updateFood(index, 'fibre', e.target.value)"
                 class="cell-input"
-                type="number"
-                min="0"
-                step="0.1"
+                type="text"
+                inputmode="decimal"
               />
             </td>
             <td data-label="Action">

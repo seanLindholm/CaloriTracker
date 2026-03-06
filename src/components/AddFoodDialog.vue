@@ -58,6 +58,15 @@ const selectedFoodUnit = computed(() => {
   return selectedFood.value ? selectedFood.value.unit : 'unit';
 });
 
+function parseLocaleFloat(value) {
+  if (value === null || value === undefined) {
+    return Number.NaN;
+  }
+
+  const normalized = String(value).trim().replace(',', '.');
+  return Number.parseFloat(normalized);
+}
+
 function updateFoodAmount(index, newAmount) {
   const mealFoodsIndices = props.trackedFoods
     .map((item, idx) => item.mealType === selectedMealType.value ? idx : -1)
@@ -65,7 +74,8 @@ function updateFoodAmount(index, newAmount) {
 
   const globalIndex = mealFoodsIndices[index];
   const updatedFoods = [...props.trackedFoods];
-  updatedFoods[globalIndex].units = Math.max(1, parseInt(newAmount) || 0);
+  const parsedAmount = parseLocaleFloat(newAmount);
+  updatedFoods[globalIndex].units = Math.max(0.01, Number.isNaN(parsedAmount) ? 0.01 : parsedAmount);
   emits('update:trackedFoods', updatedFoods);
 }
 
@@ -84,7 +94,8 @@ function addFoodItem() {
     return;
   }
 
-  const amount = Math.max(1, parseInt(foodAmount.value) || 100);
+  const parsedAmount = parseLocaleFloat(foodAmount.value);
+  const amount = Math.max(0.01, Number.isNaN(parsedAmount) ? 100 : parsedAmount);
 
   const existingIndex = props.trackedFoods.findIndex(
     item => item.foodId === selectedFood.value.id && item.mealType === selectedMealType.value
@@ -93,8 +104,8 @@ function addFoodItem() {
   const updatedFoods = [...props.trackedFoods];
 
   if (existingIndex >= 0) {
-    const parsedUnits = parseInt(updatedFoods[existingIndex].units ?? updatedFoods[existingIndex].grams, 10);
-    const currentUnits = Math.max(1, Number.isNaN(parsedUnits) ? 1 : parsedUnits);
+    const parsedUnits = parseLocaleFloat(updatedFoods[existingIndex].units ?? updatedFoods[existingIndex].grams);
+    const currentUnits = Math.max(0.01, Number.isNaN(parsedUnits) ? 0.01 : parsedUnits);
     updatedFoods[existingIndex].units = currentUnits + amount;
     updatedFoods[existingIndex].measurement = selectedFood.value.unit;
   } else {
@@ -150,11 +161,11 @@ function addNewFood() {
   }
 
   const id = getNextAvailableFoodId();
-  const calories = parseFloat(newFoodCalories.value);
-  const protein = parseFloat(newFoodProtein.value);
-  const carbohydrates = parseFloat(newFoodCarbohydrates.value);
-  const fat = parseFloat(newFoodFat.value);
-  const salt = parseFloat(newFoodSalt.value);
+  const calories = parseLocaleFloat(newFoodCalories.value);
+  const protein = parseLocaleFloat(newFoodProtein.value);
+  const carbohydrates = parseLocaleFloat(newFoodCarbohydrates.value);
+  const fat = parseLocaleFloat(newFoodFat.value);
+  const salt = parseLocaleFloat(newFoodSalt.value);
 
   if (Number.isNaN(calories) || Number.isNaN(protein) || Number.isNaN(carbohydrates) || Number.isNaN(fat) || Number.isNaN(salt)) {
     return;
@@ -250,11 +261,11 @@ function handleClose() {
               <td>
                 <div class="amount-with-unit">
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="decimal"
                     :value="item.units ?? item.grams ?? 1"
                     @change="event => updateFoodAmount(index, event.target.value)"
                     class="amount-input"
-                    min="1"
                     :aria-label="`Amount of ${item.foodName}`"
                   />
                   <span class="unit-display">{{ item.measurement || props.foods.find(f => f.id === item.foodId)?.unit || 'unit' }}</span>
@@ -319,9 +330,9 @@ function handleClose() {
             <label for="food-amount-input">Amount ({{ selectedFoodUnit }}):</label>
             <input
               v-model="foodAmount"
-              type="number"
+              type="text"
+              inputmode="decimal"
               class="amount-input"
-              min="1"
               required
             />
             </div>
@@ -355,27 +366,27 @@ function handleClose() {
 
             <div class="form-group">
               <label for="new-food-calories">Calories (per 100 units):</label>
-              <input id="new-food-calories" v-model="newFoodCalories" type="number" class="amount-input" min="0" required />
+              <input id="new-food-calories" v-model="newFoodCalories" type="text" inputmode="decimal" class="amount-input" required />
             </div>
 
             <div class="form-group">
               <label for="new-food-protein">Protein (per 100 units):</label>
-              <input id="new-food-protein" v-model="newFoodProtein" type="number" class="amount-input" min="0" required />
+              <input id="new-food-protein" v-model="newFoodProtein" type="text" inputmode="decimal" class="amount-input" required />
             </div>
 
             <div class="form-group">
               <label for="new-food-carbs">Carbohydrates (per 100 units):</label>
-              <input id="new-food-carbs" v-model="newFoodCarbohydrates" type="number" class="amount-input" min="0" required />
+              <input id="new-food-carbs" v-model="newFoodCarbohydrates" type="text" inputmode="decimal" class="amount-input" required />
             </div>
 
             <div class="form-group">
               <label for="new-food-fat">Fat (per 100 units):</label>
-              <input id="new-food-fat" v-model="newFoodFat" type="number" class="amount-input" min="0" required />
+              <input id="new-food-fat" v-model="newFoodFat" type="text" inputmode="decimal" class="amount-input" required />
             </div>
 
             <div class="form-group">
               <label for="new-food-salt">Salt (per 100 units):</label>
-              <input id="new-food-salt" v-model="newFoodSalt" type="number" class="amount-input" min="0" required />
+              <input id="new-food-salt" v-model="newFoodSalt" type="text" inputmode="decimal" class="amount-input" required />
             </div>
 
             <div class="dialog-buttons">

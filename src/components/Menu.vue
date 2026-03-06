@@ -12,6 +12,7 @@ const emit = defineEmits(['manage-foods', 'clear-tracked-foods', 'save-tracking'
 
 const menuOpen = ref(false);
 const trackingsMenuOpen = ref(false);
+const supportDialogOpen = ref(false);
 
 function handleManageFoods() {
   emit('manage-foods');
@@ -45,8 +46,12 @@ function handleAbout() {
 }
 
 function handleSupport() {
-  alert('For support, please visit our website or contact us at support@calorietracker.com');
+  supportDialogOpen.value = true;
   menuOpen.value = false;
+}
+
+function closeSupportDialog() {
+  supportDialogOpen.value = false;
 }
 
 function toggleMenu() {
@@ -188,6 +193,26 @@ function closeMenu() {
             Support
           </button>
         </nav>
+    </div>
+
+    <div
+      v-if="supportDialogOpen"
+      class="support-dialog-overlay"
+      @click.self="closeSupportDialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="support-dialog-title"
+    >
+      <div class="support-dialog">
+        <h3 id="support-dialog-title">Support</h3>
+        <p>If you want to support this and other projects, you can do this in two ways.</p>
+        <p>Spend your time watching a short add, do it as much as you would like, we will never force adds on you.</p>
+        <button type="button" class="support-action-btn">Watch short add</button>
+        <p>Donate directly using github sponsor.</p>
+        <button type="button" class="support-action-btn">Donate with GitHub Sponsor</button>
+        <p>Anyways thanks for your support, and glad that you like it</p>
+        <button type="button" class="support-close-btn" @click="closeSupportDialog">Close</button>
+      </div>
     </div>
   </div>
 </template>
@@ -389,5 +414,59 @@ function closeMenu() {
 .mobile-submenu .submenu-button:first-child,
 .mobile-submenu .submenu-button:last-child {
   border-radius: 0;
+}
+
+.support-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--overlay-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1200;
+}
+
+.support-dialog {
+  width: min(560px, 100%);
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  padding: 20px;
+}
+
+.support-dialog h3 {
+  margin-top: 0;
+}
+
+.support-dialog p {
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.support-action-btn {
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: var(--surface-alt-color);
+}
+
+.support-action-btn:hover {
+  background-color: var(--table-row-hover);
+}
+
+.support-close-btn {
+  margin-top: 6px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.support-close-btn:hover {
+  background-color: var(--secondary-hover-color);
 }
 </style>
